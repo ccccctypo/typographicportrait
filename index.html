@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TP — Typographic Portrait</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #000000;
+      --border: #000000;
+      --accent: #0066ff;
+      --font-main: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-mono: "Courier New", Courier, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.2;
+    }
+
+    /* Header Styling */
+    header.brutalist-header {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .top-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .tp-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .brand-title {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .live-tag {
+      color: #888;
+      font-weight: normal;
+      margin-left: 6px;
+    }
+
+    .sub-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #444;
+    }
+
+    .hero-banner {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-banner h1 {
+      font-size: clamp(32px, 6vw, 76px);
+      font-weight: 400;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .hero-banner .line-2 {
+      text-align: right;
+      display: block;
+      margin-top: -10px;
+    }
+
+    .nav-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-item {
+      padding: 12px 16px;
+      border-right: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      background: none;
+      border: none;
+      text-align: left;
+      transition: background 0.15s ease;
+    }
+
+    .nav-item:last-child { border-right: none; text-align: right; }
+    .nav-item:hover { background: #f0f0f0; }
+
+    .header-sub-element {
+      display: none;
+    }
+
+    body.show-header-elements .header-sub-element {
+      display: flex;
+    }
+
+    body.show-header-elements .nav-bar {
+      display: grid;
+    }
+
+    /* Main Grid Layout */
+    .app-workspace {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      min-height: calc(100vh - 120px);
+    }
+
+    @media (max-width: 900px) {
+      .app-workspace { grid-template-columns: 1fr; }
+    }
+
+    .preview-container {
+      padding: 24px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fafafa;
+    }
+
+    .preview-card {
+      width: 100%;
+      max-width: 900px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: #555;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #eee;
+      overflow: hidden;
+      min-height: 400px;
+    }
+
+    canvas#artCanvas {
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      cursor: crosshair;
+    }
+
+    /* Accordion Controls Sidebar */
+    .controls-sidebar {
+      background: var(--bg);
+      overflow-y: auto;
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .accordion-header {
+      width: 100%;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: var(--font-main);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .accordion-header:hover { background: #f9f9f9; }
+
+    .accordion-content {
+      padding: 0 18px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .accordion-item:not(.open) .accordion-content {
+      display: none;
+    }
+
+    /* Form Controls */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 400;
+      color: #222;
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: #666;
+    }
+
+    select, input[type="text"], textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-family: var(--font-main);
+      font-size: 13px;
+      border-radius: 0;
+      outline: none;
+    }
+
+    select:focus, input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .file-input-btn {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      left: 0; top: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      outline: none;
+      margin: 8px 0;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: #000;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+    }
+
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider-toggle {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .2s;
+    }
+
+    .slider-toggle:before {
+      position: absolute;
+      content: "";
+      height: 14px; width: 14px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .2s;
+    }
+
+    input:checked + .slider-toggle { background-color: #000; }
+    input:checked + .slider-toggle:before { transform: translateX(16px); }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-action {
+      padding: 9px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-action:hover { background: #000; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- Editorial Header -->
+  <header class="brutalist-header">
+    <div class="top-meta-bar header-sub-element">
+      <div style="display:flex; align-items:center;">
+        <span class="tp-badge">T—P</span>
+        <span class="brand-title">typo.portrait</span>
+        <span class="live-tag">live</span>
+      </div>
+    </div>
+    <div class="sub-meta-bar header-sub-element">
+      <span>CALLIGRAM, TYPOGRAPHY</span>
+      <span>11/2026</span>
+    </div>
+    <div class="hero-banner">
+      <h1>TP — TYPOGRAPHIC <span class="line-2">PORTRAIT</span></h1>
+    </div>
+    <nav class="nav-bar header-sub-element">
+      <button class="nav-item">IMAGE</button>
+      <button class="nav-item">TEXT</button>
+      <button class="nav-item">COLOR</button>
+      <button class="nav-item">EFFECTS</button>
+      <button class="nav-item">EXPORT</button>
+    </nav>
+  </header>
+
+  <main class="app-workspace">
+    <!-- Canvas Preview -->
+    <section class="preview-container">
+      <div class="preview-card">
+        <div class="preview-header">
+          <span>T—P</span>
+          <span>PREVIEW</span>
+          <span id="resIndicator">1920×1324</span>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="artCanvas" width="1920" height="1324"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sidebar Controls -->
+    <aside class="controls-sidebar">
+      
+      <!-- Section 1: Source -->
+      <div class="accordion-item open">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          1. Source <span>▲</span>
+        </button>
+        <div class="accordion-content">
+          <div class="toggle-row">
+            <span>Show UI Header Extras</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="headerElementsToggle">
+              <span class="slider-toggle"></span>
+            </label>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Source Image</span>
+            <div class="file-input-wrapper">
+              <div class="file-input-btn">Upload Image (PNG, JPG, WebP)</div>
+              <input type="file" id="imageInput" accept="image/*">
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Text Pattern</span>
+            <textarea id="textInput">vergonha vergonha vergonha vergonha vergonha</textarea>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Underline / Highlight Keywords</span>
+            <input type="text" id="underlineKeywords" placeholder="Words to underline (comma separated)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Typography -->
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          2. Typography <span>▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="control-group">
+            <span class="control-label">Font</span>
+            <select id="fontSelect">
+              <option value="Verdana, sans-serif" selected>Verdana</option>
+              <option value="'Inter Tight', sans-serif">Inter Tight</option>
+              <option value="Helvetica, Arial, sans-serif">Helvetica / Arial</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="'Times New Roman', serif">Times New Roman</option>
+              <option value="'Courier New', monospace">Courier New</option>
+              <option value="Impact, sans-serif">Impact</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <div class="file-input-wrapper">
+              <div class="file-input-btn">Upload font (.ttf, .otf)</div>
+              <input type="file" id="fontFileInput" accept=".ttf,.otf,.woff2">
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Font size <span class="control-val" id="fontSizeVal">14px</span></div>
+            <input type="range" id="fontSize" min="6" max="48" value="14">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Line height <span class="control-val" id="lineHeightVal">0.85x</span></div>
+            <input type="range" id="lineHeight" min="0.4" max="2.0" step="0.05" value="0.85">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Letter spacing <span class="control-val" id="letterSpacingVal">0px</span></div>
+            <input type="range" id="letterSpacing" min="-4" max="10" value="0">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Word Rotation Angle <span class="control-val" id="rotationAngleVal">0°</span></div>
+            <input type="range" id="rotationAngle" min="0" max="360" value="0">
+          </div>
+          <div class="control-group">
+            <span class="control-label">Flow Mode</span>
+            <select id="flowModeSelect">
+              <option value="grid">Grid Alignment</option>
+              <option value="radial">Radial / Spiral Flow</option>
+              <option value="contour">Contour Flow (Vector Field)</option>
+            </select>
+          </div>
+          <div class="toggle-row">
+            <span>Font Weight Randomizer</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="randomWeightToggle">
+              <span class="slider-toggle"></span>
+            </label>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Text Transform</span>
+            <select id="textTransformSelect">
+              <option value="none">As-Is</option>
+              <option value="uppercase">UPPERCASE</option>
+              <option value="lowercase">lowercase</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Rendering & Density -->
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          3. Rendering & Density <span>▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="toggle-row">
+            <span>Invert Text & Empty Space (Negative Space)</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="invertTextEmptyToggle">
+              <span class="slider-toggle"></span>
+            </label>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Dynamic Size Range <span class="control-val" id="dynamicSizeVal">1.0x</span></div>
+            <input type="range" id="dynamicSizeSlider" min="0.0" max="2.0" step="0.1" value="1.0">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Hero Words Scale Factor <span class="control-val" id="heroWordsVal">3.5x</span></div>
+            <input type="range" id="heroWordsSlider" min="0.0" max="5.0" step="0.1" value="3.5">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Shape Edge Masking / Softness <span class="control-val" id="clippingVal">100%</span></div>
+            <input type="range" id="clippingSlider" min="0" max="100" value="100">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Luminance Inversion & Shift <span class="control-val" id="invertLumVal">0%</span></div>
+            <input type="range" id="invertLumSlider" min="-100" max="100" value="0">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Luminance Adjust <span class="control-val" id="luminanceVal">0</span></div>
+            <input type="range" id="luminanceShift" min="-100" max="100" value="0">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Contrast Booster <span class="control-val" id="contrastVal">1.2x</span></div>
+            <input type="range" id="contrast" min="0.5" max="5.0" step="0.1" value="1.2">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Contour Warp (Deterministic) <span class="control-val" id="warpVal">0</span></div>
+            <input type="range" id="warpAmount" min="0" max="20" value="0">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Luminance Threshold <span class="control-val" id="thresholdVal">128</span></div>
+            <input type="range" id="threshold" min="0" max="255" value="128">
+          </div>
+          <div class="control-group">
+            <div class="control-label">Gaussian Blur <span class="control-val" id="blurVal">0px</span></div>
+            <input type="range" id="blurAmount" min="0" max="10" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Color & FX -->
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          4. Color & FX <span>▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="toggle-row">
+            <span>Invert Colors (Text / BG)</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="invertColorsToggle">
+              <span class="slider-toggle"></span>
+            </label>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Color Mode</span>
+            <select id="colorModeSelect">
+              <option value="solid">Custom Solid</option>
+              <option value="sample">Sample Original Image</option>
+              <option value="mono">Monochromatic Luminance</option>
+            </select>
+          </div>
+          <div class="color-grid">
+            <div class="control-group">
+              <span class="control-label">Text Color</span>
+              <input type="color" id="textColor" value="#ffffff">
+            </div>
+            <div class="control-group">
+              <span class="control-label">Background</span>
+              <input type="color" id="bgColor" value="#0a0a0a">
+            </div>
+            <div class="control-group">
+              <span class="control-label">Underline</span>
+              <input type="color" id="underlineColor" value="#ff0000">
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Original Background Blend <span class="control-val" id="bgBlendVal">0%</span></div>
+            <input type="range" id="bgBlend" min="0" max="100" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Export -->
+      <div class="accordion-item">
+        <button class="accordion-header" onclick="toggleAccordion(this)">
+          5. Export <span>▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="control-group">
+            <span class="control-label">Export Scale Factor</span>
+            <select id="exportScale">
+              <option value="1">1x Standard</option>
+              <option value="2">2x High Res</option>
+              <option value="4">4x Ultra HD</option>
+            </select>
+          </div>
+          <div class="btn-group">
+            <button class="btn-action" onclick="downloadImage('png')">PNG Image</button>
+            <button class="btn-action" onclick="downloadSVG()">SVG Vector</button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('artCanvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    
+    let sourceImg = null;
+    let highResCanvas = null;
+    let highResCtx = null;
+    let customFontName = null;
+
+    const MIN_HD_DIMENSION = 1920;
+
+    function createDefaultImage() {
+      const offCanvas = document.createElement('canvas');
+      offCanvas.width = 1920;
+      offCanvas.height = 1324;
+      const offCtx = offCanvas.getContext('2d');
+      offCtx.fillStyle = '#000';
+      offCtx.fillRect(0, 0, 1920, 1324);
+      offCtx.fillStyle = '#fff';
+      
+      offCtx.beginPath();
+      offCtx.arc(960, 662, 420, 0, Math.PI * 2);
+      offCtx.fill();
+
+      const img = new Image();
+      img.src = offCanvas.toDataURL();
+      img.onload = () => {
+        setupSourceImage(img);
+      };
+    }
+
+    function setupSourceImage(img) {
+      sourceImg = img;
+      
+      let scale = 1;
+      let targetW = img.width;
+      let targetH = img.height;
+
+      if (targetW < MIN_HD_DIMENSION && targetH < MIN_HD_DIMENSION) {
+        if (targetW >= targetH) {
+          scale = MIN_HD_DIMENSION / targetW;
+        } else {
+          scale = MIN_HD_DIMENSION / targetH;
+        }
+        targetW = Math.round(targetW * scale);
+        targetH = Math.round(targetH * scale);
+      }
+
+      highResCanvas = document.createElement('canvas');
+      highResCanvas.width = targetW;
+      highResCanvas.height = targetH;
+      highResCtx = highResCanvas.getContext('2d', { willReadFrequently: true });
+
+      highResCtx.imageSmoothingEnabled = true;
+      highResCtx.imageSmoothingQuality = 'high';
+      highResCtx.drawImage(img, 0, 0, targetW, targetH);
+
+      canvas.width = targetW;
+      canvas.height = targetH;
+      document.getElementById('resIndicator').innerText = `${targetW}×${targetH}`;
+
+      renderCanvas();
+    }
+
+    function getBilinearPixel(pixels, w, h, x, y) {
+      const x1 = Math.floor(x);
+      const y1 = Math.floor(y);
+      const x2 = Math.min(x1 + 1, w - 1);
+      const y2 = Math.min(y1 + 1, h - 1);
+
+      const dx = x - x1;
+      const dy = y - y1;
+
+      const idx11 = (y1 * w + x1) * 4;
+      const idx21 = (y1 * w + x2) * 4;
+      const idx12 = (y2 * w + x1) * 4;
+      const idx22 = (y2 * w + x2) * 4;
+
+      let r = (1-dx)*(1-dy)*pixels[idx11] + dx*(1-dy)*pixels[idx21] + (1-dx)*dy*pixels[idx12] + dx*dy*pixels[idx22];
+      let g = (1-dx)*(1-dy)*pixels[idx11+1] + dx*(1-dy)*pixels[idx21+1] + (1-dx)*dy*pixels[idx12+1] + dx*dy*pixels[idx22+1];
+      let b = (1-dx)*(1-dy)*pixels[idx11+2] + dx*(1-dy)*pixels[idx21+2] + (1-dx)*dy*pixels[idx12+2] + dx*dy*pixels[idx22+2];
+
+      return [r, g, b];
+    }
+
+    function getLocalVariance(pixels, w, h, x, y, radius = 2) {
+      let sum = 0, sumSq = 0, count = 0;
+      for (let dy = -radius; dy <= radius; dy++) {
+        for (let dx = -radius; dx <= radius; dx++) {
+          const px = Math.min(Math.max(x + dx, 0), w - 1);
+          const py = Math.min(Math.max(y + dy, 0), h - 1);
+          const idx = (py * w + px) * 4;
+          const bright = (pixels[idx] + pixels[idx+1] + pixels[idx+2]) / 3;
+          sum += bright;
+          sumSq += bright * bright;
+          count++;
+        }
+      }
+      const mean = sum / count;
+      return (sumSq / count) - (mean * mean);
+    }
+
+    function renderCanvas() {
+      if (!highResCanvas) return;
+
+      const w = canvas.width;
+      const h = canvas.height;
+
+      const textRaw = document.getElementById('textInput').value || "vergonha";
+      const transformMode = document.getElementById('textTransformSelect').value;
+      let text = textRaw;
+      if (transformMode === 'uppercase') text = textRaw.toUpperCase();
+      if (transformMode === 'lowercase') text = textRaw.toLowerCase();
+
+      const words = text.split(/\s+/).filter(w => w.length > 0);
+      const fontBase = customFontName || document.getElementById('fontSelect').value;
+      const fontSize = parseInt(document.getElementById('fontSize').value);
+      const lineHeight = parseFloat(document.getElementById('lineHeight').value);
+      const letterSpacing = parseInt(document.getElementById('letterSpacing').value);
+      const manualRotation = parseInt(document.getElementById('rotationAngle').value);
+      const flowMode = document.getElementById('flowModeSelect').value;
+
+      const invertTextEmpty = document.getElementById('invertTextEmptyToggle').checked;
+      const dynamicSizeFactor = parseFloat(document.getElementById('dynamicSizeSlider').value);
+      const heroWordsFactor = parseFloat(document.getElementById('heroWordsSlider').value);
+      const clippingMaskVal = parseInt(document.getElementById('clippingSlider').value);
+      const invertLumShift = parseInt(document.getElementById('invertLumSlider').value);
+
+      const lumShift = parseInt(document.getElementById('luminanceShift').value);
+      const contrast = parseFloat(document.getElementById('contrast').value);
+      const warp = parseInt(document.getElementById('warpAmount').value);
+      const threshold = parseInt(document.getElementById('threshold').value);
+      const blurVal = parseInt(document.getElementById('blurAmount').value);
+
+      const invertColors = document.getElementById('invertColorsToggle').checked;
+      const colorMode = document.getElementById('colorModeSelect').value;
+      let textColor = document.getElementById('textColor').value;
+      let bgColor = document.getElementById('bgColor').value;
+      if (invertColors) {
+        const tmp = textColor; textColor = bgColor; bgColor = tmp;
+      }
+
+      const underlineColor = document.getElementById('underlineColor').value;
+      const underlineWords = document.getElementById('underlineKeywords').value
+        .split(',').map(s => s.trim().toLowerCase()).filter(s => s.length > 0);
+
+      const bgBlend = parseInt(document.getElementById('bgBlend').value);
+
+      const off = document.createElement('canvas');
+      off.width = w; off.height = h;
+      const oCtx = off.getContext('2d', { willReadFrequently: true });
+
+      if (blurVal > 0) oCtx.filter = `blur(${blurVal}px)`;
+      oCtx.drawImage(highResCanvas, 0, 0, w, h);
+      oCtx.filter = 'none';
+
+      const imgData = oCtx.getImageData(0, 0, w, h);
+      const pixels = imgData.data;
+
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, w, h);
+
+      if (bgBlend > 0) {
+        ctx.save();
+        ctx.globalAlpha = bgBlend / 100;
+        ctx.drawImage(highResCanvas, 0, 0, w, h);
+        ctx.restore();
+      }
+
+      let wordIdx = 0;
+
+      if (flowMode === 'grid' || flowMode === 'contour') {
+        const stepY = fontSize * lineHeight;
+        const stepX = fontSize * 0.55;
+
+        for (let y = 0; y < h; y += stepY) {
+          for (let x = 0; x < w; x += stepX) {
+            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
+
+            let r = rawR + lumShift;
+            let g = rawG + lumShift;
+            let b = rawB + lumShift;
+
+            r = Math.min(255, Math.max(0, (r - 128) * contrast + 128));
+            g = Math.min(255, Math.max(0, (g - 128) * contrast + 128));
+            b = Math.min(255, Math.max(0, (b - 128) * contrast + 128));
+
+            let brightness = (r + g + b) / 3;
+
+            if (invertLumShift !== 0) {
+              const blendFactor = Math.abs(invertLumShift) / 100;
+              const inverted = 255 - brightness;
+              brightness = brightness * (1 - blendFactor) + inverted * blendFactor;
+            }
+
+            const effectiveThreshold = threshold * (clippingMaskVal / 100);
+            if (clippingMaskVal > 0) {
+              if (!invertTextEmpty && brightness < effectiveThreshold) continue;
+              if (invertTextEmpty && brightness > effectiveThreshold) continue;
+            }
+
+            const currentWord = words[wordIdx % words.length];
+            wordIdx++;
+
+            let curFontSize = fontSize;
+            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
+
+            if (heroWordsFactor > 0 && variance < 150 && brightness > threshold + 20) {
+              curFontSize = fontSize * heroWordsFactor;
+            } else if (dynamicSizeFactor > 0) {
+              curFontSize = fontSize * (1 + ((brightness / 255) - 0.5) * dynamicSizeFactor);
+            }
+
+            const isRandomWeight = document.getElementById('randomWeightToggle').checked;
+            const weight = isRandomWeight ? (Math.random() > 0.5 ? 'bold' : 'normal') : 'normal';
+            ctx.font = `${weight} ${curFontSize}px ${fontBase}`;
+
+            if (colorMode === 'sample') {
+              ctx.fillStyle = `rgb(${r},${g},${b})`;
+            } else if (colorMode === 'mono') {
+              ctx.fillStyle = `rgb(${brightness},${brightness},${brightness})`;
+            } else {
+              ctx.fillStyle = textColor;
+            }
+
+            const pxRight = getBilinearPixel(pixels, w, h, Math.min(x + 3, w - 1), y);
+            const pxDown = getBilinearPixel(pixels, w, h, x, Math.min(y + 3, h - 1));
+            const gradX = ((pxRight[0]+pxRight[1]+pxRight[2])/3 - brightness) / 255;
+            const gradY = ((pxDown[0]+pxDown[1]+pxDown[2])/3 - brightness) / 255;
+
+            let renderY = y;
+            if (warp > 0) renderY += gradX * warp * 6;
+
+            let wordAngle = (manualRotation * Math.PI) / 180;
+            if (flowMode === 'contour') {
+              wordAngle += Math.atan2(gradY, gradX) + Math.PI / 2;
+            }
+
+            ctx.save();
+            ctx.translate(x, renderY);
+            if (wordAngle !== 0) ctx.rotate(wordAngle);
+
+            ctx.fillText(currentWord, 0, 0);
+
+            if (underlineWords.includes(currentWord.toLowerCase())) {
+              ctx.strokeStyle = underlineColor;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(0, 3);
+              ctx.lineTo(ctx.measureText(currentWord).width, 3);
+              ctx.stroke();
+            }
+
+            ctx.restore();
+
+            x += ctx.measureText(currentWord).width + letterSpacing;
+          }
+        }
+      } else if (flowMode === 'radial') {
+        const centerX = w / 2;
+        const centerY = h / 2;
+        const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
+        const radiusStep = fontSize * lineHeight;
+
+        for (let r = fontSize; r < maxRadius; r += radiusStep) {
+          const circumference = 2 * Math.PI * r;
+          const wordCount = Math.floor(circumference / (fontSize * 2.5));
+          const angleStep = (2 * Math.PI) / Math.max(1, wordCount);
+
+          for (let a = 0; a < 2 * Math.PI; a += angleStep) {
+            const x = centerX + r * Math.cos(a);
+            const y = centerY + r * Math.sin(a);
+
+            if (x < 0 || x >= w || y < 0 || y >= h) continue;
+
+            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
+            let br = (rawR + rawG + rawB) / 3 + lumShift;
+            br = Math.min(255, Math.max(0, (br - 128) * contrast + 128));
+
+            const effectiveThreshold = threshold * (clippingMaskVal / 100);
+            if (clippingMaskVal > 0) {
+              if (!invertTextEmpty && br < effectiveThreshold) continue;
+              if (invertTextEmpty && br > effectiveThreshold) continue;
+            }
+
+            const currentWord = words[wordIdx % words.length];
+            wordIdx++;
+
+            let curFontSize = dynamicSizeFactor > 0 ? fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor) : fontSize;
+            ctx.font = `normal ${curFontSize}px ${fontBase}`;
+            ctx.fillStyle = (colorMode === 'sample') ? `rgb(${rawR},${rawG},${rawB})` : textColor;
+
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(a + Math.PI / 2 + (manualRotation * Math.PI) / 180);
+            ctx.fillText(currentWord, 0, 0);
+            ctx.restore();
+          }
+        }
+      }
+    }
+
+    function toggleAccordion(btn) {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    document.getElementById('headerElementsToggle').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        document.body.classList.add('show-header-elements');
+      } else {
+        document.body.classList.remove('show-header-elements');
+      }
+    });
+
+    document.querySelectorAll('input, select, textarea').forEach(elem => {
+      elem.addEventListener('input', () => {
+        if (document.getElementById('fontSizeVal')) document.getElementById('fontSizeVal').innerText = document.getElementById('fontSize').value + 'px';
+        if (document.getElementById('lineHeightVal')) document.getElementById('lineHeightVal').innerText = document.getElementById('lineHeight').value + 'x';
+        if (document.getElementById('letterSpacingVal')) document.getElementById('letterSpacingVal').innerText = document.getElementById('letterSpacing').value + 'px';
+        if (document.getElementById('rotationAngleVal')) document.getElementById('rotationAngleVal').innerText = document.getElementById('rotationAngle').value + '°';
+        if (document.getElementById('dynamicSizeVal')) document.getElementById('dynamicSizeVal').innerText = document.getElementById('dynamicSizeSlider').value + 'x';
+        if (document.getElementById('heroWordsVal')) document.getElementById('heroWordsVal').innerText = document.getElementById('heroWordsSlider').value + 'x';
+        if (document.getElementById('clippingVal')) document.getElementById('clippingVal').innerText = document.getElementById('clippingSlider').value + '%';
+        if (document.getElementById('invertLumVal')) document.getElementById('invertLumVal').innerText = document.getElementById('invertLumSlider').value + '%';
+        if (document.getElementById('luminanceVal')) document.getElementById('luminanceVal').innerText = document.getElementById('luminanceShift').value;
+        if (document.getElementById('contrastVal')) document.getElementById('contrastVal').innerText = document.getElementById('contrast').value + 'x';
+        if (document.getElementById('warpVal')) document.getElementById('warpVal').innerText = document.getElementById('warpAmount').value;
+        if (document.getElementById('thresholdVal')) document.getElementById('thresholdVal').innerText = document.getElementById('threshold').value;
+        if (document.getElementById('blurVal')) document.getElementById('blurVal').innerText = document.getElementById('blurAmount').value + 'px';
+        if (document.getElementById('bgBlendVal')) document.getElementById('bgBlendVal').innerText = document.getElementById('bgBlend').value + '%';
+
+        renderCanvas();
+      });
+    });
+
+    document.getElementById('imageInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            setupSourceImage(img);
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('fontFileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const font = new FontFace('CustomUserFont', event.target.result);
+          font.load().then((loadedFont) => {
+            document.fonts.add(loadedFont);
+            customFontName = 'CustomUserFont';
+            renderCanvas();
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    });
+
+    function downloadImage(format) {
+      const scale = parseInt(document.getElementById('exportScale').value);
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = canvas.width * scale;
+      exportCanvas.height = canvas.height * scale;
+      const eCtx = exportCanvas.getContext('2d');
+      eCtx.scale(scale, scale);
+      eCtx.drawImage(canvas, 0, 0);
+
+      const link = document.createElement('a');
+      link.download = `typographic-portrait.${format}`;
+      link.href = exportCanvas.toDataURL(`image/${format}`);
+      link.click();
+    }
+
+    function downloadSVG() {
+      const w = canvas.width;
+      const h = canvas.height;
+
+      const textRaw = document.getElementById('textInput').value || "vergonha";
+      const transformMode = document.getElementById('textTransformSelect').value;
+      let text = textRaw;
+      if (transformMode === 'uppercase') text = textRaw.toUpperCase();
+      if (transformMode === 'lowercase') text = textRaw.toLowerCase();
+
+      const words = text.split(/\s+/).filter(w => w.length > 0);
+      const fontBase = customFontName || document.getElementById('fontSelect').value;
+      const fontSize = parseInt(document.getElementById('fontSize').value);
+      const lineHeight = parseFloat(document.getElementById('lineHeight').value);
+      const letterSpacing = parseInt(document.getElementById('letterSpacing').value);
+      const manualRotation = parseInt(document.getElementById('rotationAngle').value);
+      const flowMode = document.getElementById('flowModeSelect').value;
+
+      const invertTextEmpty = document.getElementById('invertTextEmptyToggle').checked;
+      const dynamicSizeFactor = parseFloat(document.getElementById('dynamicSizeSlider').value);
+      const heroWordsFactor = parseFloat(document.getElementById('heroWordsSlider').value);
+      const clippingMaskVal = parseInt(document.getElementById('clippingSlider').value);
+      const invertLumShift = parseInt(document.getElementById('invertLumSlider').value);
+
+      const lumShift = parseInt(document.getElementById('luminanceShift').value);
+      const contrast = parseFloat(document.getElementById('contrast').value);
+      const warp = parseInt(document.getElementById('warpAmount').value);
+      const threshold = parseInt(document.getElementById('threshold').value);
+      const blurVal = parseInt(document.getElementById('blurAmount').value);
+
+      const invertColors = document.getElementById('invertColorsToggle').checked;
+      const colorMode = document.getElementById('colorModeSelect').value;
+      let textColor = document.getElementById('textColor').value;
+      let bgColor = document.getElementById('bgColor').value;
+      if (invertColors) {
+        const tmp = textColor; textColor = bgColor; bgColor = tmp;
+      }
+
+      const underlineColor = document.getElementById('underlineColor').value;
+      const underlineWords = document.getElementById('underlineKeywords').value
+        .split(',').map(s => s.trim().toLowerCase()).filter(s => s.length > 0);
+
+      const off = document.createElement('canvas');
+      off.width = w; off.height = h;
+      const oCtx = off.getContext('2d', { willReadFrequently: true });
+
+      if (blurVal > 0) oCtx.filter = `blur(${blurVal}px)`;
+      oCtx.drawImage(highResCanvas, 0, 0, w, h);
+      oCtx.filter = 'none';
+
+      const imgData = oCtx.getImageData(0, 0, w, h);
+      const pixels = imgData.data;
+
+      let svgElements = `<rect width="100%" height="100%" fill="${bgColor}"/>`;
+      let wordIdx = 0;
+
+      if (flowMode === 'grid' || flowMode === 'contour') {
+        const stepY = fontSize * lineHeight;
+        const stepX = fontSize * 0.55;
+
+        for (let y = 0; y < h; y += stepY) {
+          for (let x = 0; x < w; x += stepX) {
+            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
+
+            let r = rawR + lumShift;
+            let g = rawG + lumShift;
+            let b = rawB + lumShift;
+
+            r = Math.min(255, Math.max(0, (r - 128) * contrast + 128));
+            g = Math.min(255, Math.max(0, (g - 128) * contrast + 128));
+            b = Math.min(255, Math.max(0, (b - 128) * contrast + 128));
+
+            let brightness = (r + g + b) / 3;
+
+            if (invertLumShift !== 0) {
+              const blendFactor = Math.abs(invertLumShift) / 100;
+              const inverted = 255 - brightness;
+              brightness = brightness * (1 - blendFactor) + inverted * blendFactor;
+            }
+
+            const effectiveThreshold = threshold * (clippingMaskVal / 100);
+            if (clippingMaskVal > 0) {
+              if (!invertTextEmpty && brightness < effectiveThreshold) continue;
+              if (invertTextEmpty && brightness > effectiveThreshold) continue;
+            }
+
+            const currentWord = words[wordIdx % words.length];
+            wordIdx++;
+
+            let curFontSize = fontSize;
+            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
+
+            if (heroWordsFactor > 0 && variance < 150 && brightness > threshold + 20) {
+              curFontSize = fontSize * heroWordsFactor;
+            } else if (dynamicSizeFactor > 0) {
+              curFontSize = fontSize * (1 + ((brightness / 255) - 0.5) * dynamicSizeFactor);
+            }
+
+            let fillStyle = textColor;
+            if (colorMode === 'sample') {
+              fillStyle = `rgb(${r},${g},${b})`;
+            } else if (colorMode === 'mono') {
+              fillStyle = `rgb(${brightness},${brightness},${brightness})`;
+            }
+
+            const pxRight = getBilinearPixel(pixels, w, h, Math.min(x + 3, w - 1), y);
+            const pxDown = getBilinearPixel(pixels, w, h, x, Math.min(y + 3, h - 1));
+            const gradX = ((pxRight[0]+pxRight[1]+pxRight[2])/3 - brightness) / 255;
+            const gradY = ((pxDown[0]+pxDown[1]+pxDown[2])/3 - brightness) / 255;
+
+            let renderY = y;
+            if (warp > 0) renderY += gradX * warp * 6;
+
+            let wordAngle = (manualRotation * Math.PI) / 180;
+            if (flowMode === 'contour') {
+              wordAngle += Math.atan2(gradY, gradX) + Math.PI / 2;
+            }
+
+            const angleDeg = (wordAngle * 180) / Math.PI;
+            const safeWord = currentWord.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const safeFont = fontBase.replace(/'/g, '');
+
+            svgElements += `<g transform="translate(${x.toFixed(2)}, ${renderY.toFixed(2)}) rotate(${angleDeg.toFixed(2)})">`;
+            svgElements += `<text font-family="${safeFont}" font-size="${curFontSize.toFixed(2)}px" fill="${fillStyle}">${safeWord}</text>`;
+
+            if (underlineWords.includes(currentWord.toLowerCase())) {
+              ctx.font = `${curFontSize}px ${fontBase}`;
+              const textWidth = ctx.measureText(currentWord).width;
+              svgElements += `<line x1="0" y1="3" x2="${textWidth.toFixed(2)}" y2="3" stroke="${underlineColor}" stroke-width="2"/>`;
+            }
+
+            svgElements += `</g>`;
+
+            ctx.font = `${curFontSize}px ${fontBase}`;
+            x += ctx.measureText(currentWord).width + letterSpacing;
+          }
+        }
+      } else if (flowMode === 'radial') {
+        const centerX = w / 2;
+        const centerY = h / 2;
+        const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
+        const radiusStep = fontSize * lineHeight;
+
+        for (let r = fontSize; r < maxRadius; r += radiusStep) {
+          const circumference = 2 * Math.PI * r;
+          const wordCount = Math.floor(circumference / (fontSize * 2.5));
+          const angleStep = (2 * Math.PI) / Math.max(1, wordCount);
+
+          for (let a = 0; a < 2 * Math.PI; a += angleStep) {
+            const x = centerX + r * Math.cos(a);
+            const y = centerY + r * Math.sin(a);
+
+            if (x < 0 || x >= w || y < 0 || y >= h) continue;
+
+            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
+            let br = (rawR + rawG + rawB) / 3 + lumShift;
+            br = Math.min(255, Math.max(0, (br - 128) * contrast + 128));
+
+            const effectiveThreshold = threshold * (clippingMaskVal / 100);
+            if (clippingMaskVal > 0) {
+              if (!invertTextEmpty && br < effectiveThreshold) continue;
+              if (invertTextEmpty && br > effectiveThreshold) continue;
+            }
+
+            const currentWord = words[wordIdx % words.length];
+            wordIdx++;
+
+            let curFontSize = dynamicSizeFactor > 0 ? fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor) : fontSize;
+            let fillStyle = (colorMode === 'sample') ? `rgb(${rawR},${rawG},${rawB})` : textColor;
+
+            const angleDeg = ((a + Math.PI / 2 + (manualRotation * Math.PI) / 180) * 180) / Math.PI;
+            const safeWord = currentWord.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            svgElements += `<g transform="translate(${x.toFixed(2)}, ${y.toFixed(2)}) rotate(${angleDeg.toFixed(2)})">`;
+            svgElements += `<text font-family="${fontBase.replace(/'/g, '')}" font-size="${curFontSize.toFixed(2)}px" fill="${fillStyle}">${safeWord}</text>`;
+            svgElements += `</g>`;
+          }
+        }
+      }
+
+      const svgHeader = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+      const fullSVG = `${svgHeader}${svgElements}</svg>`;
+
+      const blob = new Blob([fullSVG], { type: 'image/svg+xml;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'typographic-portrait.svg';
+      link.click();
+    }
+
+    createDefaultImage();
+  </script>
+</body>
+</html>
