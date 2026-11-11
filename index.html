@@ -29,54 +29,8 @@
       background: var(--bg);
     }
 
-    .top-meta-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-      letter-spacing: -0.02em;
-    }
-
-    .tp-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      font-size: 11px;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-
-    .brand-title {
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .live-tag {
-      color: #888;
-      font-weight: normal;
-      margin-left: 6px;
-    }
-
-    .sub-meta-bar {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 20px;
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #444;
-    }
-
     .hero-banner {
       padding: 24px 20px;
-      border-bottom: 1px solid var(--border);
     }
 
     .hero-banner h1 {
@@ -91,41 +45,6 @@
       text-align: right;
       display: block;
       margin-top: -10px;
-    }
-
-    .nav-bar {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-item {
-      padding: 12px 16px;
-      border-right: 1px solid var(--border);
-      font-size: 14px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      cursor: pointer;
-      background: none;
-      border: none;
-      text-align: left;
-      transition: background 0.15s ease;
-    }
-
-    .nav-item:last-child { border-right: none; text-align: right; }
-    .nav-item:hover { background: #f0f0f0; }
-
-    .header-sub-element {
-      display: none;
-    }
-
-    body.show-header-elements .header-sub-element {
-      display: flex;
-    }
-
-    body.show-header-elements .nav-bar {
-      display: grid;
     }
 
     /* Main Grid Layout */
@@ -369,27 +288,9 @@
 
   <!-- Editorial Header -->
   <header class="brutalist-header">
-    <div class="top-meta-bar header-sub-element">
-      <div style="display:flex; align-items:center;">
-        <span class="tp-badge">T—P</span>
-        <span class="brand-title">typo.portrait</span>
-        <span class="live-tag">live</span>
-      </div>
-    </div>
-    <div class="sub-meta-bar header-sub-element">
-      <span>CALLIGRAM, TYPOGRAPHY</span>
-      <span>11/2026</span>
-    </div>
     <div class="hero-banner">
       <h1>TP — TYPOGRAPHIC <span class="line-2">PORTRAIT</span></h1>
     </div>
-    <nav class="nav-bar header-sub-element">
-      <button class="nav-item">IMAGE</button>
-      <button class="nav-item">TEXT</button>
-      <button class="nav-item">COLOR</button>
-      <button class="nav-item">EFFECTS</button>
-      <button class="nav-item">EXPORT</button>
-    </nav>
   </header>
 
   <main class="app-workspace">
@@ -399,10 +300,10 @@
         <div class="preview-header">
           <span>T—P</span>
           <span>PREVIEW</span>
-          <span id="resIndicator">1920×1324</span>
+          <span id="resIndicator">1920×1920</span>
         </div>
         <div class="canvas-wrapper">
-          <canvas id="artCanvas" width="1920" height="1324"></canvas>
+          <canvas id="artCanvas" width="1920" height="1920"></canvas>
         </div>
       </div>
     </section>
@@ -416,13 +317,6 @@
           1. Source <span>▲</span>
         </button>
         <div class="accordion-content">
-          <div class="toggle-row">
-            <span>Show UI Header Extras</span>
-            <label class="toggle-switch">
-              <input type="checkbox" id="headerElementsToggle">
-              <span class="slider-toggle"></span>
-            </label>
-          </div>
           <div class="control-group">
             <span class="control-label">Source Image</span>
             <div class="file-input-wrapper">
@@ -466,8 +360,8 @@
             </div>
           </div>
           <div class="control-group">
-            <div class="control-label">Font size <span class="control-val" id="fontSizeVal">14px</span></div>
-            <input type="range" id="fontSize" min="6" max="48" value="14">
+            <div class="control-label">Font size <span class="control-val" id="fontSizeVal">20px</span></div>
+            <input type="range" id="fontSize" min="6" max="48" value="20">
           </div>
           <div class="control-group">
             <div class="control-label">Line height <span class="control-val" id="lineHeightVal">0.85x</span></div>
@@ -484,7 +378,7 @@
           <div class="control-group">
             <span class="control-label">Flow Mode</span>
             <select id="flowModeSelect">
-              <option value="grid">Grid Alignment</option>
+              <option value="grid" selected>Grid Alignment</option>
               <option value="radial">Radial / Spiral Flow</option>
               <option value="contour">Contour Flow (Vector Field)</option>
             </select>
@@ -499,7 +393,7 @@
           <div class="control-group">
             <span class="control-label">Text Transform</span>
             <select id="textTransformSelect">
-              <option value="none">As-Is</option>
+              <option value="none" selected>As-Is</option>
               <option value="uppercase">UPPERCASE</option>
               <option value="lowercase">lowercase</option>
             </select>
@@ -514,6 +408,13 @@
         </button>
         <div class="accordion-content">
           <div class="toggle-row">
+            <span>Invert Colors (Text / BG)</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="invertColorsToggle">
+              <span class="slider-toggle"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
             <span>Invert Text & Empty Space (Negative Space)</span>
             <label class="toggle-switch">
               <input type="checkbox" id="invertTextEmptyToggle">
@@ -521,36 +422,32 @@
             </label>
           </div>
           <div class="control-group">
-            <div class="control-label">Dynamic Size Range <span class="control-val" id="dynamicSizeVal">1.0x</span></div>
-            <input type="range" id="dynamicSizeSlider" min="0.0" max="2.0" step="0.1" value="1.0">
+            <div class="control-label">Dynamic Size Range <span class="control-val" id="dynamicSizeVal">0.0x</span></div>
+            <input type="range" id="dynamicSizeSlider" min="0.0" max="2.0" step="0.1" value="0.0">
           </div>
           <div class="control-group">
-            <div class="control-label">Hero Words Scale Factor <span class="control-val" id="heroWordsVal">3.5x</span></div>
-            <input type="range" id="heroWordsSlider" min="0.0" max="5.0" step="0.1" value="3.5">
+            <div class="control-label">Hero Words Scale Factor <span class="control-val" id="heroWordsVal">1.0x</span></div>
+            <input type="range" id="heroWordsSlider" min="0.0" max="5.0" step="0.1" value="1.0">
           </div>
           <div class="control-group">
             <div class="control-label">Shape Edge Masking / Softness <span class="control-val" id="clippingVal">100%</span></div>
             <input type="range" id="clippingSlider" min="0" max="100" value="100">
           </div>
           <div class="control-group">
-            <div class="control-label">Luminance Inversion & Shift <span class="control-val" id="invertLumVal">0%</span></div>
-            <input type="range" id="invertLumSlider" min="-100" max="100" value="0">
-          </div>
-          <div class="control-group">
             <div class="control-label">Luminance Adjust <span class="control-val" id="luminanceVal">0</span></div>
             <input type="range" id="luminanceShift" min="-100" max="100" value="0">
           </div>
           <div class="control-group">
-            <div class="control-label">Contrast Booster <span class="control-val" id="contrastVal">1.2x</span></div>
-            <input type="range" id="contrast" min="0.5" max="5.0" step="0.1" value="1.2">
+            <div class="control-label">Contrast Booster <span class="control-val" id="contrastVal">2.0x</span></div>
+            <input type="range" id="contrast" min="0.5" max="5.0" step="0.1" value="2.0">
           </div>
           <div class="control-group">
             <div class="control-label">Contour Warp (Deterministic) <span class="control-val" id="warpVal">0</span></div>
             <input type="range" id="warpAmount" min="0" max="20" value="0">
           </div>
           <div class="control-group">
-            <div class="control-label">Luminance Threshold <span class="control-val" id="thresholdVal">128</span></div>
-            <input type="range" id="threshold" min="0" max="255" value="128">
+            <div class="control-label">Luminance Threshold <span class="control-val" id="thresholdVal">99</span></div>
+            <input type="range" id="threshold" min="0" max="255" value="99">
           </div>
           <div class="control-group">
             <div class="control-label">Gaussian Blur <span class="control-val" id="blurVal">0px</span></div>
@@ -565,17 +462,10 @@
           4. Color & FX <span>▼</span>
         </button>
         <div class="accordion-content">
-          <div class="toggle-row">
-            <span>Invert Colors (Text / BG)</span>
-            <label class="toggle-switch">
-              <input type="checkbox" id="invertColorsToggle">
-              <span class="slider-toggle"></span>
-            </label>
-          </div>
           <div class="control-group">
             <span class="control-label">Color Mode</span>
             <select id="colorModeSelect">
-              <option value="solid">Custom Solid</option>
+              <option value="solid" selected>Custom Solid</option>
               <option value="sample">Sample Original Image</option>
               <option value="mono">Monochromatic Luminance</option>
             </select>
@@ -636,23 +526,28 @@
 
     const MIN_HD_DIMENSION = 1920;
 
-    function createDefaultImage() {
-      const offCanvas = document.createElement('canvas');
-      offCanvas.width = 1920;
-      offCanvas.height = 1324;
-      const offCtx = offCanvas.getContext('2d');
-      offCtx.fillStyle = '#000';
-      offCtx.fillRect(0, 0, 1920, 1324);
-      offCtx.fillStyle = '#fff';
-      
-      offCtx.beginPath();
-      offCtx.arc(960, 662, 420, 0, Math.PI * 2);
-      offCtx.fill();
+    // Imagem base pré-carregada por defeito (Silhueta do cabrito em P&B)
+    const DEFAULT_IMAGE_BASE64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAEAAQADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eH16goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnA09PV1tcY2Dc4OTldX19gdGhk6OipmcHn6Cfp6ur/2gAMAw2handling3A=";
 
+    function createDefaultImage() {
       const img = new Image();
-      img.src = offCanvas.toDataURL();
       img.onload = () => {
         setupSourceImage(img);
+      };
+      // Carrega a imagem da cabra/silhueta predefinida se não conseguir ler do base64
+      img.src = DEFAULT_IMAGE_BASE64;
+      img.onerror = () => {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = 1000;
+        offCanvas.height = 1000;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.fillStyle = '#000';
+        offCtx.fillRect(0, 0, 1000, 1000);
+        offCtx.fillStyle = '#fff';
+        offCtx.beginPath();
+        offCtx.arc(500, 500, 350, 0, Math.PI * 2);
+        offCtx.fill();
+        setupSourceImage(offCanvas);
       };
     }
 
@@ -660,8 +555,8 @@
       sourceImg = img;
       
       let scale = 1;
-      let targetW = img.width;
-      let targetH = img.height;
+      let targetW = img.width || 1920;
+      let targetH = img.height || 1920;
 
       if (targetW < MIN_HD_DIMENSION && targetH < MIN_HD_DIMENSION) {
         if (targetW >= targetH) {
@@ -751,7 +646,6 @@
       const dynamicSizeFactor = parseFloat(document.getElementById('dynamicSizeSlider').value);
       const heroWordsFactor = parseFloat(document.getElementById('heroWordsSlider').value);
       const clippingMaskVal = parseInt(document.getElementById('clippingSlider').value);
-      const invertLumShift = parseInt(document.getElementById('invertLumSlider').value);
 
       const lumShift = parseInt(document.getElementById('luminanceShift').value);
       const contrast = parseFloat(document.getElementById('contrast').value);
@@ -798,10 +692,9 @@
 
       if (flowMode === 'grid' || flowMode === 'contour') {
         const stepY = fontSize * lineHeight;
-        const stepX = fontSize * 0.55;
 
         for (let y = 0; y < h; y += stepY) {
-          for (let x = 0; x < w; x += stepX) {
+          for (let x = 0; x < w; ) {
             const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
 
             let r = rawR + lumShift;
@@ -814,16 +707,16 @@
 
             let brightness = (r + g + b) / 3;
 
-            if (invertLumShift !== 0) {
-              const blendFactor = Math.abs(invertLumShift) / 100;
-              const inverted = 255 - brightness;
-              brightness = brightness * (1 - blendFactor) + inverted * blendFactor;
-            }
-
             const effectiveThreshold = threshold * (clippingMaskVal / 100);
             if (clippingMaskVal > 0) {
-              if (!invertTextEmpty && brightness < effectiveThreshold) continue;
-              if (invertTextEmpty && brightness > effectiveThreshold) continue;
+              if (!invertTextEmpty && brightness < effectiveThreshold) {
+                x += fontSize * 0.55;
+                continue;
+              }
+              if (invertTextEmpty && brightness > effectiveThreshold) {
+                x += fontSize * 0.55;
+                continue;
+              }
             }
 
             const currentWord = words[wordIdx % words.length];
@@ -832,7 +725,7 @@
             let curFontSize = fontSize;
             const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
 
-            if (heroWordsFactor > 0 && variance < 150 && brightness > threshold + 20) {
+            if (heroWordsFactor > 1.0 && variance < 150 && brightness > threshold + 20) {
               curFontSize = fontSize * heroWordsFactor;
             } else if (dynamicSizeFactor > 0) {
               curFontSize = fontSize * (1 + ((brightness / 255) - 0.5) * dynamicSizeFactor);
@@ -880,7 +773,8 @@
 
             ctx.restore();
 
-            x += ctx.measureText(currentWord).width + letterSpacing;
+            const wordWidth = ctx.measureText(currentWord).width;
+            x += Math.max(wordWidth + letterSpacing, curFontSize * 0.55);
           }
         }
       } else if (flowMode === 'radial') {
@@ -913,7 +807,15 @@
             const currentWord = words[wordIdx % words.length];
             wordIdx++;
 
-            let curFontSize = dynamicSizeFactor > 0 ? fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor) : fontSize;
+            let curFontSize = fontSize;
+            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
+
+            if (heroWordsFactor > 1.0 && variance < 150 && br > threshold + 20) {
+              curFontSize = fontSize * heroWordsFactor;
+            } else if (dynamicSizeFactor > 0) {
+              curFontSize = fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor);
+            }
+
             ctx.font = `normal ${curFontSize}px ${fontBase}`;
             ctx.fillStyle = (colorMode === 'sample') ? `rgb(${rawR},${rawG},${rawB})` : textColor;
 
@@ -934,14 +836,6 @@
       if (!isOpen) item.classList.add('open');
     }
 
-    document.getElementById('headerElementsToggle').addEventListener('change', (e) => {
-      if (e.target.checked) {
-        document.body.classList.add('show-header-elements');
-      } else {
-        document.body.classList.remove('show-header-elements');
-      }
-    });
-
     document.querySelectorAll('input, select, textarea').forEach(elem => {
       elem.addEventListener('input', () => {
         if (document.getElementById('fontSizeVal')) document.getElementById('fontSizeVal').innerText = document.getElementById('fontSize').value + 'px';
@@ -951,7 +845,6 @@
         if (document.getElementById('dynamicSizeVal')) document.getElementById('dynamicSizeVal').innerText = document.getElementById('dynamicSizeSlider').value + 'x';
         if (document.getElementById('heroWordsVal')) document.getElementById('heroWordsVal').innerText = document.getElementById('heroWordsSlider').value + 'x';
         if (document.getElementById('clippingVal')) document.getElementById('clippingVal').innerText = document.getElementById('clippingSlider').value + '%';
-        if (document.getElementById('invertLumVal')) document.getElementById('invertLumVal').innerText = document.getElementById('invertLumSlider').value + '%';
         if (document.getElementById('luminanceVal')) document.getElementById('luminanceVal').innerText = document.getElementById('luminanceShift').value;
         if (document.getElementById('contrastVal')) document.getElementById('contrastVal').innerText = document.getElementById('contrast').value + 'x';
         if (document.getElementById('warpVal')) document.getElementById('warpVal').innerText = document.getElementById('warpAmount').value;
@@ -1031,7 +924,6 @@
       const dynamicSizeFactor = parseFloat(document.getElementById('dynamicSizeSlider').value);
       const heroWordsFactor = parseFloat(document.getElementById('heroWordsSlider').value);
       const clippingMaskVal = parseInt(document.getElementById('clippingSlider').value);
-      const invertLumShift = parseInt(document.getElementById('invertLumSlider').value);
 
       const lumShift = parseInt(document.getElementById('luminanceShift').value);
       const contrast = parseFloat(document.getElementById('contrast').value);
@@ -1067,10 +959,9 @@
 
       if (flowMode === 'grid' || flowMode === 'contour') {
         const stepY = fontSize * lineHeight;
-        const stepX = fontSize * 0.55;
 
         for (let y = 0; y < h; y += stepY) {
-          for (let x = 0; x < w; x += stepX) {
+          for (let x = 0; x < w; ) {
             const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
 
             let r = rawR + lumShift;
@@ -1083,16 +974,16 @@
 
             let brightness = (r + g + b) / 3;
 
-            if (invertLumShift !== 0) {
-              const blendFactor = Math.abs(invertLumShift) / 100;
-              const inverted = 255 - brightness;
-              brightness = brightness * (1 - blendFactor) + inverted * blendFactor;
-            }
-
             const effectiveThreshold = threshold * (clippingMaskVal / 100);
             if (clippingMaskVal > 0) {
-              if (!invertTextEmpty && brightness < effectiveThreshold) continue;
-              if (invertTextEmpty && brightness > effectiveThreshold) continue;
+              if (!invertTextEmpty && brightness < effectiveThreshold) {
+                x += fontSize * 0.55;
+                continue;
+              }
+              if (invertTextEmpty && brightness > effectiveThreshold) {
+                x += fontSize * 0.55;
+                continue;
+              }
             }
 
             const currentWord = words[wordIdx % words.length];
@@ -1101,7 +992,7 @@
             let curFontSize = fontSize;
             const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
 
-            if (heroWordsFactor > 0 && variance < 150 && brightness > threshold + 20) {
+            if (heroWordsFactor > 1.0 && variance < 150 && brightness > threshold + 20) {
               curFontSize = fontSize * heroWordsFactor;
             } else if (dynamicSizeFactor > 0) {
               curFontSize = fontSize * (1 + ((brightness / 255) - 0.5) * dynamicSizeFactor);
@@ -1134,16 +1025,16 @@
             svgElements += `<g transform="translate(${x.toFixed(2)}, ${renderY.toFixed(2)}) rotate(${angleDeg.toFixed(2)})">`;
             svgElements += `<text font-family="${safeFont}" font-size="${curFontSize.toFixed(2)}px" fill="${fillStyle}">${safeWord}</text>`;
 
+            ctx.font = `${curFontSize}px ${fontBase}`;
+            const wordWidth = ctx.measureText(currentWord).width;
+
             if (underlineWords.includes(currentWord.toLowerCase())) {
-              ctx.font = `${curFontSize}px ${fontBase}`;
-              const textWidth = ctx.measureText(currentWord).width;
-              svgElements += `<line x1="0" y1="3" x2="${textWidth.toFixed(2)}" y2="3" stroke="${underlineColor}" stroke-width="2"/>`;
+              svgElements += `<line x1="0" y1="3" x2="${wordWidth.toFixed(2)}" y2="3" stroke="${underlineColor}" stroke-width="2"/>`;
             }
 
             svgElements += `</g>`;
 
-            ctx.font = `${curFontSize}px ${fontBase}`;
-            x += ctx.measureText(currentWord).width + letterSpacing;
+            x += Math.max(wordWidth + letterSpacing, curFontSize * 0.55);
           }
         }
       } else if (flowMode === 'radial') {
@@ -1176,7 +1067,15 @@
             const currentWord = words[wordIdx % words.length];
             wordIdx++;
 
-            let curFontSize = dynamicSizeFactor > 0 ? fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor) : fontSize;
+            let curFontSize = fontSize;
+            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
+
+            if (heroWordsFactor > 1.0 && variance < 150 && br > threshold + 20) {
+              curFontSize = fontSize * heroWordsFactor;
+            } else if (dynamicSizeFactor > 0) {
+              curFontSize = fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor);
+            }
+
             let fillStyle = (colorMode === 'sample') ? `rgb(${rawR},${rawG},${rawB})` : textColor;
 
             const angleDeg = ((a + Math.PI / 2 + (manualRotation * Math.PI) / 180) * 180) / Math.PI;
