@@ -1,1104 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TP — Typographic Portrait</title>
-  <style>
-    :root {
-      --bg: #ffffff;
-      --fg: #000000;
-      --border: #000000;
-      --accent: #0066ff;
-      --font-main: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      --font-mono: "Courier New", Courier, monospace;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background-color: var(--bg);
-      color: var(--fg);
-      font-family: var(--font-main);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.2;
-    }
-
-    /* Header Styling */
-    header.brutalist-header {
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .hero-banner {
-      padding: 24px 20px;
-    }
-
-    .hero-banner h1 {
-      font-size: clamp(32px, 6vw, 76px);
-      font-weight: 400;
-      letter-spacing: -0.04em;
-      line-height: 0.95;
-      text-transform: uppercase;
-    }
-
-    .hero-banner .line-2 {
-      text-align: right;
-      display: block;
-      margin-top: -10px;
-    }
-
-    /* Main Grid Layout */
-    .app-workspace {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      min-height: calc(100vh - 120px);
-    }
-
-    @media (max-width: 900px) {
-      .app-workspace { grid-template-columns: 1fr; }
-    }
-
-    .preview-container {
-      padding: 24px;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #fafafa;
-    }
-
-    .preview-card {
-      width: 100%;
-      max-width: 900px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-    }
-
-    .preview-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 14px;
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: #555;
-    }
-
-    .canvas-wrapper {
-      position: relative;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      background: #eee;
-      overflow: hidden;
-      min-height: 400px;
-    }
-
-    canvas#artCanvas {
-      max-width: 100%;
-      height: auto;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      cursor: crosshair;
-    }
-
-    /* Accordion Controls Sidebar */
-    .controls-sidebar {
-      background: var(--bg);
-      overflow-y: auto;
-    }
-
-    .accordion-item {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .accordion-header {
-      width: 100%;
-      padding: 14px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: none;
-      border: none;
-      font-size: 15px;
-      font-weight: 500;
-      font-family: var(--font-main);
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .accordion-header:hover { background: #f9f9f9; }
-
-    .accordion-content {
-      padding: 0 18px 18px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .accordion-item:not(.open) .accordion-content {
-      display: none;
-    }
-
-    /* Form Controls */
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .control-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 400;
-      color: #222;
-    }
-
-    .control-val {
-      font-family: var(--font-mono);
-      color: #666;
-    }
-
-    select, input[type="text"], textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-family: var(--font-main);
-      font-size: 13px;
-      border-radius: 0;
-      outline: none;
-    }
-
-    select:focus, input[type="text"]:focus, textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .file-input-wrapper {
-      position: relative;
-      width: 100%;
-    }
-
-    .file-input-btn {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .file-input-wrapper input[type="file"] {
-      position: absolute;
-      left: 0; top: 0; width: 100%; height: 100%;
-      opacity: 0; cursor: pointer;
-    }
-
-    input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 1px;
-      background: var(--border);
-      outline: none;
-      margin: 8px 0;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      background: #000;
-      cursor: pointer;
-      border-radius: 0;
-    }
-
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 36px;
-      height: 20px;
-    }
-
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-
-    .slider-toggle {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .2s;
-    }
-
-    .slider-toggle:before {
-      position: absolute;
-      content: "";
-      height: 14px; width: 14px;
-      left: 3px; bottom: 3px;
-      background-color: white;
-      transition: .2s;
-    }
-
-    input:checked + .slider-toggle { background-color: #000; }
-    input:checked + .slider-toggle:before { transform: translateX(16px); }
-
-    .color-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-
-    .btn-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .btn-action {
-      padding: 9px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    .btn-action:hover { background: #000; color: #fff; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TP — Typographic Portrait</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&display=swap">
+<style>
+:root{--ink:#000;--paper:#fff;--grey:#8a8a8a;--f:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--ink);color:var(--ink);font:400 13px/1.35 var(--f);-webkit-font-smoothing:antialiased}
+.shell{max-width:1400px;margin:0 auto;padding:clamp(10px,2.4vw,32px)}
+.card,.win{background:var(--paper)}
+.row{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--ink);padding:8px 18px}
+.id{display:flex;align-items:center;gap:14px;padding:14px 18px;font-size:clamp(15px,1.7vw,20px)}
+.logo{width:44px;height:44px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:500}
+.id .g{color:var(--grey)}
+.meta{font-size:13px;text-transform:uppercase}
+h1{margin:0;font-weight:400;font-size:clamp(40px,7.4vw,98px);line-height:.94;letter-spacing:-.04em;padding:14px 18px 18px}
+h1 span{display:block;text-align:right}
+.bar{font-size:clamp(14px,2vw,26px);text-transform:uppercase;letter-spacing:-.01em;padding:10px 18px}
+.bar button{all:unset;cursor:pointer}
+.bar button:hover,.bar button:focus-visible{text-decoration:underline}
+.bar .u{text-decoration:underline}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:clamp(10px,2.4vw,32px);margin-top:clamp(10px,2.4vw,32px);align-items:start}
+.win{border:1px solid var(--ink)}
+.top{display:grid;grid-template-columns:1fr auto 1fr;font-size:10px;text-transform:uppercase;padding:5px 10px;border-bottom:1px solid var(--ink)}
+.top span:last-child{text-align:right}
+.frame{position:relative;background:#e9e9e9;line-height:0}
+#cv{width:100%;height:auto;display:block}
+.hint{line-height:1.3;padding:6px 10px;border-top:1px solid var(--ink);font-size:11px}
+.panel{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;overscroll-behavior:contain}
+.sec h2{margin:0;font-size:13px;font-weight:500;display:flex;gap:10px;padding:6px 10px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);background:var(--paper);position:sticky;top:0;z-index:1}
+.sec:first-child h2{border-top:0}
+.sec h2 i{font-style:normal;font-variant-numeric:tabular-nums;width:1.2em}
+.sec>div{padding:10px;display:grid;gap:10px}
+.r label,.f>span{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.r output{font-variant-numeric:tabular-nums;color:var(--grey)}
+.f{display:grid}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sw{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--ink);padding:4px 6px 4px 8px;font-size:12px}
+.sw.off{opacity:.35}
+input[type=color]{width:30px;height:18px;padding:0;border:1px solid var(--ink);background:none;border-radius:0;cursor:pointer}
+input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+input[type=color]::-webkit-color-swatch{border:0}
+input[type=color]::-moz-color-swatch{border:0}
+select,textarea,input[type=text]{width:100%;font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:0;padding:6px 8px}
+textarea{resize:vertical;min-height:88px}
+.btn,button.b{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:0;padding:7px 10px;cursor:pointer;text-align:center;display:block}
+.btn:hover,button.b:hover,button.b[aria-pressed=true],input:focus-visible+.btn{background:var(--ink);color:var(--paper)}
+button.go{background:var(--ink);color:var(--paper);font-size:15px;padding:11px}
+button.go:hover{background:var(--paper);color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.file{display:grid;gap:4px}
+.file small{color:var(--grey);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:16px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--ink)}
+input[type=range]::-moz-range-track{height:1px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:14px;background:var(--ink);border:0;margin-top:-7px;border-radius:0}
+input[type=range]::-moz-range-thumb{width:10px;height:14px;background:var(--ink);border:0;border-radius:0}
+.chk{display:flex;align-items:center;gap:8px;cursor:pointer}
+.chk input{width:14px;height:14px;accent-color:#000;margin:0}
+.scales{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#msg{min-height:1.4em;font-size:12px;color:var(--grey)}
+:focus-visible{outline:2px solid #1f3bff;outline-offset:1px}
+@media (max-width:960px){.grid{grid-template-columns:1fr}.panel{position:static;max-height:none}.bar{flex-wrap:wrap;gap:6px 14px}}
+</style>
 </head>
 <body>
-
-  <!-- Editorial Header -->
-  <header class="brutalist-header">
-    <div class="hero-banner">
-      <h1>TP — TYPOGRAPHIC <span class="line-2">PORTRAIT</span></h1>
-    </div>
-  </header>
-
-  <main class="app-workspace">
-    <!-- Canvas Preview -->
-    <section class="preview-container">
-      <div class="preview-card">
-        <div class="preview-header">
-          <span>T—P</span>
-          <span>PREVIEW</span>
-          <span id="resIndicator">1920×1920</span>
-        </div>
-        <div class="canvas-wrapper">
-          <canvas id="artCanvas" width="1920" height="1920"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- Sidebar Controls -->
-    <aside class="controls-sidebar">
-      
-      <!-- Section 1: Source -->
-      <div class="accordion-item open">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          1. Source <span>▲</span>
-        </button>
-        <div class="accordion-content">
-          <div class="control-group">
-            <span class="control-label">Source Image</span>
-            <div class="file-input-wrapper">
-              <div class="file-input-btn">Upload Image (PNG, JPG, WebP)</div>
-              <input type="file" id="imageInput" accept="image/*">
-            </div>
-          </div>
-          <div class="control-group">
-            <span class="control-label">Text Pattern</span>
-            <textarea id="textInput">vergonha vergonha vergonha vergonha vergonha</textarea>
-          </div>
-          <div class="control-group">
-            <span class="control-label">Underline / Highlight Keywords</span>
-            <input type="text" id="underlineKeywords" placeholder="Words to underline (comma separated)">
-          </div>
-        </div>
-      </div>
-
-      <!-- Section 2: Typography -->
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          2. Typography <span>▼</span>
-        </button>
-        <div class="accordion-content">
-          <div class="control-group">
-            <span class="control-label">Font</span>
-            <select id="fontSelect">
-              <option value="Verdana, sans-serif" selected>Verdana</option>
-              <option value="'Inter Tight', sans-serif">Inter Tight</option>
-              <option value="Helvetica, Arial, sans-serif">Helvetica / Arial</option>
-              <option value="Georgia, serif">Georgia</option>
-              <option value="'Times New Roman', serif">Times New Roman</option>
-              <option value="'Courier New', monospace">Courier New</option>
-              <option value="Impact, sans-serif">Impact</option>
-            </select>
-          </div>
-          <div class="control-group">
-            <div class="file-input-wrapper">
-              <div class="file-input-btn">Upload font (.ttf, .otf)</div>
-              <input type="file" id="fontFileInput" accept=".ttf,.otf,.woff2">
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Font size <span class="control-val" id="fontSizeVal">20px</span></div>
-            <input type="range" id="fontSize" min="6" max="48" value="20">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Line height <span class="control-val" id="lineHeightVal">0.85x</span></div>
-            <input type="range" id="lineHeight" min="0.4" max="2.0" step="0.05" value="0.85">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Letter spacing <span class="control-val" id="letterSpacingVal">0px</span></div>
-            <input type="range" id="letterSpacing" min="-4" max="10" value="0">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Word Rotation Angle <span class="control-val" id="rotationAngleVal">0°</span></div>
-            <input type="range" id="rotationAngle" min="0" max="360" value="0">
-          </div>
-          <div class="control-group">
-            <span class="control-label">Flow Mode</span>
-            <select id="flowModeSelect">
-              <option value="grid" selected>Grid Alignment</option>
-              <option value="radial">Radial / Spiral Flow</option>
-              <option value="contour">Contour Flow (Vector Field)</option>
-            </select>
-          </div>
-          <div class="toggle-row">
-            <span>Font Weight Randomizer</span>
-            <label class="toggle-switch">
-              <input type="checkbox" id="randomWeightToggle">
-              <span class="slider-toggle"></span>
-            </label>
-          </div>
-          <div class="control-group">
-            <span class="control-label">Text Transform</span>
-            <select id="textTransformSelect">
-              <option value="none" selected>As-Is</option>
-              <option value="uppercase">UPPERCASE</option>
-              <option value="lowercase">lowercase</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section 3: Rendering & Density -->
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          3. Rendering & Density <span>▼</span>
-        </button>
-        <div class="accordion-content">
-          <div class="toggle-row">
-            <span>Invert Colors (Text / BG)</span>
-            <label class="toggle-switch">
-              <input type="checkbox" id="invertColorsToggle">
-              <span class="slider-toggle"></span>
-            </label>
-          </div>
-          <div class="toggle-row">
-            <span>Invert Text & Empty Space (Negative Space)</span>
-            <label class="toggle-switch">
-              <input type="checkbox" id="invertTextEmptyToggle">
-              <span class="slider-toggle"></span>
-            </label>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Dynamic Size Range <span class="control-val" id="dynamicSizeVal">0.0x</span></div>
-            <input type="range" id="dynamicSizeSlider" min="0.0" max="2.0" step="0.1" value="0.0">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Hero Words Scale Factor <span class="control-val" id="heroWordsVal">1.0x</span></div>
-            <input type="range" id="heroWordsSlider" min="0.0" max="5.0" step="0.1" value="1.0">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Shape Edge Masking / Softness <span class="control-val" id="clippingVal">100%</span></div>
-            <input type="range" id="clippingSlider" min="0" max="100" value="100">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Luminance Adjust <span class="control-val" id="luminanceVal">0</span></div>
-            <input type="range" id="luminanceShift" min="-100" max="100" value="0">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Contrast Booster <span class="control-val" id="contrastVal">2.0x</span></div>
-            <input type="range" id="contrast" min="0.5" max="5.0" step="0.1" value="2.0">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Contour Warp (Deterministic) <span class="control-val" id="warpVal">0</span></div>
-            <input type="range" id="warpAmount" min="0" max="20" value="0">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Luminance Threshold <span class="control-val" id="thresholdVal">99</span></div>
-            <input type="range" id="threshold" min="0" max="255" value="99">
-          </div>
-          <div class="control-group">
-            <div class="control-label">Gaussian Blur <span class="control-val" id="blurVal">0px</span></div>
-            <input type="range" id="blurAmount" min="0" max="10" value="0">
-          </div>
-        </div>
-      </div>
-
-      <!-- Section 4: Color & FX -->
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          4. Color & FX <span>▼</span>
-        </button>
-        <div class="accordion-content">
-          <div class="control-group">
-            <span class="control-label">Color Mode</span>
-            <select id="colorModeSelect">
-              <option value="solid" selected>Custom Solid</option>
-              <option value="sample">Sample Original Image</option>
-              <option value="mono">Monochromatic Luminance</option>
-            </select>
-          </div>
-          <div class="color-grid">
-            <div class="control-group">
-              <span class="control-label">Text Color</span>
-              <input type="color" id="textColor" value="#ffffff">
-            </div>
-            <div class="control-group">
-              <span class="control-label">Background</span>
-              <input type="color" id="bgColor" value="#0a0a0a">
-            </div>
-            <div class="control-group">
-              <span class="control-label">Underline</span>
-              <input type="color" id="underlineColor" value="#ff0000">
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Original Background Blend <span class="control-val" id="bgBlendVal">0%</span></div>
-            <input type="range" id="bgBlend" min="0" max="100" value="0">
-          </div>
-        </div>
-      </div>
-
-      <!-- Section 5: Export -->
-      <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">
-          5. Export <span>▼</span>
-        </button>
-        <div class="accordion-content">
-          <div class="control-group">
-            <span class="control-label">Export Scale Factor</span>
-            <select id="exportScale">
-              <option value="1">1x Standard</option>
-              <option value="2">2x High Res</option>
-              <option value="4">4x Ultra HD</option>
-            </select>
-          </div>
-          <div class="btn-group">
-            <button class="btn-action" onclick="downloadImage('png')">PNG Image</button>
-            <button class="btn-action" onclick="downloadSVG()">SVG Vector</button>
-          </div>
-        </div>
-      </div>
-
-    </aside>
-  </main>
-
-  <script>
-    const canvas = document.getElementById('artCanvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+<div class="shell">
+<header class="card">
+  
+  
+  <h1>TP — TYPOGRAPHIC<span>PORTRAIT</span></h1>
+  
     
-    let sourceImg = null;
-    let highResCanvas = null;
-    let highResCtx = null;
-    let customFontName = null;
-
-    const MIN_HD_DIMENSION = 1920;
-
-    // Imagem base pré-carregada por defeito (Silhueta do cabrito em P&B)
-    const DEFAULT_IMAGE_BASE64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAEAAQADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eH16goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnA09PV1tcY2Dc4OTldX19gdGhk6OipmcHn6Cfp6ur/2gAMAw2handling3A=";
-
-    function createDefaultImage() {
-      const img = new Image();
-      img.onload = () => {
-        setupSourceImage(img);
-      };
-      // Carrega a imagem da cabra/silhueta predefinida se não conseguir ler do base64
-      img.src = DEFAULT_IMAGE_BASE64;
-      img.onerror = () => {
-        const offCanvas = document.createElement('canvas');
-        offCanvas.width = 1000;
-        offCanvas.height = 1000;
-        const offCtx = offCanvas.getContext('2d');
-        offCtx.fillStyle = '#000';
-        offCtx.fillRect(0, 0, 1000, 1000);
-        offCtx.fillStyle = '#fff';
-        offCtx.beginPath();
-        offCtx.arc(500, 500, 350, 0, Math.PI * 2);
-        offCtx.fill();
-        setupSourceImage(offCanvas);
-      };
-    }
-
-    function setupSourceImage(img) {
-      sourceImg = img;
-      
-      let scale = 1;
-      let targetW = img.width || 1920;
-      let targetH = img.height || 1920;
-
-      if (targetW < MIN_HD_DIMENSION && targetH < MIN_HD_DIMENSION) {
-        if (targetW >= targetH) {
-          scale = MIN_HD_DIMENSION / targetW;
-        } else {
-          scale = MIN_HD_DIMENSION / targetH;
-        }
-        targetW = Math.round(targetW * scale);
-        targetH = Math.round(targetH * scale);
-      }
-
-      highResCanvas = document.createElement('canvas');
-      highResCanvas.width = targetW;
-      highResCanvas.height = targetH;
-      highResCtx = highResCanvas.getContext('2d', { willReadFrequently: true });
-
-      highResCtx.imageSmoothingEnabled = true;
-      highResCtx.imageSmoothingQuality = 'high';
-      highResCtx.drawImage(img, 0, 0, targetW, targetH);
-
-      canvas.width = targetW;
-      canvas.height = targetH;
-      document.getElementById('resIndicator').innerText = `${targetW}×${targetH}`;
-
-      renderCanvas();
-    }
-
-    function getBilinearPixel(pixels, w, h, x, y) {
-      const x1 = Math.floor(x);
-      const y1 = Math.floor(y);
-      const x2 = Math.min(x1 + 1, w - 1);
-      const y2 = Math.min(y1 + 1, h - 1);
-
-      const dx = x - x1;
-      const dy = y - y1;
-
-      const idx11 = (y1 * w + x1) * 4;
-      const idx21 = (y1 * w + x2) * 4;
-      const idx12 = (y2 * w + x1) * 4;
-      const idx22 = (y2 * w + x2) * 4;
-
-      let r = (1-dx)*(1-dy)*pixels[idx11] + dx*(1-dy)*pixels[idx21] + (1-dx)*dy*pixels[idx12] + dx*dy*pixels[idx22];
-      let g = (1-dx)*(1-dy)*pixels[idx11+1] + dx*(1-dy)*pixels[idx21+1] + (1-dx)*dy*pixels[idx12+1] + dx*dy*pixels[idx22+1];
-      let b = (1-dx)*(1-dy)*pixels[idx11+2] + dx*(1-dy)*pixels[idx21+2] + (1-dx)*dy*pixels[idx12+2] + dx*dy*pixels[idx22+2];
-
-      return [r, g, b];
-    }
-
-    function getLocalVariance(pixels, w, h, x, y, radius = 2) {
-      let sum = 0, sumSq = 0, count = 0;
-      for (let dy = -radius; dy <= radius; dy++) {
-        for (let dx = -radius; dx <= radius; dx++) {
-          const px = Math.min(Math.max(x + dx, 0), w - 1);
-          const py = Math.min(Math.max(y + dy, 0), h - 1);
-          const idx = (py * w + px) * 4;
-          const bright = (pixels[idx] + pixels[idx+1] + pixels[idx+2]) / 3;
-          sum += bright;
-          sumSq += bright * bright;
-          count++;
-        }
-      }
-      const mean = sum / count;
-      return (sumSq / count) - (mean * mean);
-    }
-
-    function renderCanvas() {
-      if (!highResCanvas) return;
-
-      const w = canvas.width;
-      const h = canvas.height;
-
-      const textRaw = document.getElementById('textInput').value || "vergonha";
-      const transformMode = document.getElementById('textTransformSelect').value;
-      let text = textRaw;
-      if (transformMode === 'uppercase') text = textRaw.toUpperCase();
-      if (transformMode === 'lowercase') text = textRaw.toLowerCase();
-
-      const words = text.split(/\s+/).filter(w => w.length > 0);
-      const fontBase = customFontName || document.getElementById('fontSelect').value;
-      const fontSize = parseInt(document.getElementById('fontSize').value);
-      const lineHeight = parseFloat(document.getElementById('lineHeight').value);
-      const letterSpacing = parseInt(document.getElementById('letterSpacing').value);
-      const manualRotation = parseInt(document.getElementById('rotationAngle').value);
-      const flowMode = document.getElementById('flowModeSelect').value;
-
-      const invertTextEmpty = document.getElementById('invertTextEmptyToggle').checked;
-      const dynamicSizeFactor = parseFloat(document.getElementById('dynamicSizeSlider').value);
-      const heroWordsFactor = parseFloat(document.getElementById('heroWordsSlider').value);
-      const clippingMaskVal = parseInt(document.getElementById('clippingSlider').value);
-
-      const lumShift = parseInt(document.getElementById('luminanceShift').value);
-      const contrast = parseFloat(document.getElementById('contrast').value);
-      const warp = parseInt(document.getElementById('warpAmount').value);
-      const threshold = parseInt(document.getElementById('threshold').value);
-      const blurVal = parseInt(document.getElementById('blurAmount').value);
-
-      const invertColors = document.getElementById('invertColorsToggle').checked;
-      const colorMode = document.getElementById('colorModeSelect').value;
-      let textColor = document.getElementById('textColor').value;
-      let bgColor = document.getElementById('bgColor').value;
-      if (invertColors) {
-        const tmp = textColor; textColor = bgColor; bgColor = tmp;
-      }
-
-      const underlineColor = document.getElementById('underlineColor').value;
-      const underlineWords = document.getElementById('underlineKeywords').value
-        .split(',').map(s => s.trim().toLowerCase()).filter(s => s.length > 0);
-
-      const bgBlend = parseInt(document.getElementById('bgBlend').value);
-
-      const off = document.createElement('canvas');
-      off.width = w; off.height = h;
-      const oCtx = off.getContext('2d', { willReadFrequently: true });
-
-      if (blurVal > 0) oCtx.filter = `blur(${blurVal}px)`;
-      oCtx.drawImage(highResCanvas, 0, 0, w, h);
-      oCtx.filter = 'none';
-
-      const imgData = oCtx.getImageData(0, 0, w, h);
-      const pixels = imgData.data;
-
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, w, h);
-
-      if (bgBlend > 0) {
-        ctx.save();
-        ctx.globalAlpha = bgBlend / 100;
-        ctx.drawImage(highResCanvas, 0, 0, w, h);
-        ctx.restore();
-      }
-
-      let wordIdx = 0;
-
-      if (flowMode === 'grid' || flowMode === 'contour') {
-        const stepY = fontSize * lineHeight;
-
-        for (let y = 0; y < h; y += stepY) {
-          for (let x = 0; x < w; ) {
-            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
-
-            let r = rawR + lumShift;
-            let g = rawG + lumShift;
-            let b = rawB + lumShift;
-
-            r = Math.min(255, Math.max(0, (r - 128) * contrast + 128));
-            g = Math.min(255, Math.max(0, (g - 128) * contrast + 128));
-            b = Math.min(255, Math.max(0, (b - 128) * contrast + 128));
-
-            let brightness = (r + g + b) / 3;
-
-            const effectiveThreshold = threshold * (clippingMaskVal / 100);
-            if (clippingMaskVal > 0) {
-              if (!invertTextEmpty && brightness < effectiveThreshold) {
-                x += fontSize * 0.55;
-                continue;
-              }
-              if (invertTextEmpty && brightness > effectiveThreshold) {
-                x += fontSize * 0.55;
-                continue;
-              }
-            }
-
-            const currentWord = words[wordIdx % words.length];
-            wordIdx++;
-
-            let curFontSize = fontSize;
-            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
-
-            if (heroWordsFactor > 1.0 && variance < 150 && brightness > threshold + 20) {
-              curFontSize = fontSize * heroWordsFactor;
-            } else if (dynamicSizeFactor > 0) {
-              curFontSize = fontSize * (1 + ((brightness / 255) - 0.5) * dynamicSizeFactor);
-            }
-
-            const isRandomWeight = document.getElementById('randomWeightToggle').checked;
-            const weight = isRandomWeight ? (Math.random() > 0.5 ? 'bold' : 'normal') : 'normal';
-            ctx.font = `${weight} ${curFontSize}px ${fontBase}`;
-
-            if (colorMode === 'sample') {
-              ctx.fillStyle = `rgb(${r},${g},${b})`;
-            } else if (colorMode === 'mono') {
-              ctx.fillStyle = `rgb(${brightness},${brightness},${brightness})`;
-            } else {
-              ctx.fillStyle = textColor;
-            }
-
-            const pxRight = getBilinearPixel(pixels, w, h, Math.min(x + 3, w - 1), y);
-            const pxDown = getBilinearPixel(pixels, w, h, x, Math.min(y + 3, h - 1));
-            const gradX = ((pxRight[0]+pxRight[1]+pxRight[2])/3 - brightness) / 255;
-            const gradY = ((pxDown[0]+pxDown[1]+pxDown[2])/3 - brightness) / 255;
-
-            let renderY = y;
-            if (warp > 0) renderY += gradX * warp * 6;
-
-            let wordAngle = (manualRotation * Math.PI) / 180;
-            if (flowMode === 'contour') {
-              wordAngle += Math.atan2(gradY, gradX) + Math.PI / 2;
-            }
-
-            ctx.save();
-            ctx.translate(x, renderY);
-            if (wordAngle !== 0) ctx.rotate(wordAngle);
-
-            ctx.fillText(currentWord, 0, 0);
-
-            if (underlineWords.includes(currentWord.toLowerCase())) {
-              ctx.strokeStyle = underlineColor;
-              ctx.lineWidth = 2;
-              ctx.beginPath();
-              ctx.moveTo(0, 3);
-              ctx.lineTo(ctx.measureText(currentWord).width, 3);
-              ctx.stroke();
-            }
-
-            ctx.restore();
-
-            const wordWidth = ctx.measureText(currentWord).width;
-            x += Math.max(wordWidth + letterSpacing, curFontSize * 0.55);
-          }
-        }
-      } else if (flowMode === 'radial') {
-        const centerX = w / 2;
-        const centerY = h / 2;
-        const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
-        const radiusStep = fontSize * lineHeight;
-
-        for (let r = fontSize; r < maxRadius; r += radiusStep) {
-          const circumference = 2 * Math.PI * r;
-          const wordCount = Math.floor(circumference / (fontSize * 2.5));
-          const angleStep = (2 * Math.PI) / Math.max(1, wordCount);
-
-          for (let a = 0; a < 2 * Math.PI; a += angleStep) {
-            const x = centerX + r * Math.cos(a);
-            const y = centerY + r * Math.sin(a);
-
-            if (x < 0 || x >= w || y < 0 || y >= h) continue;
-
-            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
-            let br = (rawR + rawG + rawB) / 3 + lumShift;
-            br = Math.min(255, Math.max(0, (br - 128) * contrast + 128));
-
-            const effectiveThreshold = threshold * (clippingMaskVal / 100);
-            if (clippingMaskVal > 0) {
-              if (!invertTextEmpty && br < effectiveThreshold) continue;
-              if (invertTextEmpty && br > effectiveThreshold) continue;
-            }
-
-            const currentWord = words[wordIdx % words.length];
-            wordIdx++;
-
-            let curFontSize = fontSize;
-            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
-
-            if (heroWordsFactor > 1.0 && variance < 150 && br > threshold + 20) {
-              curFontSize = fontSize * heroWordsFactor;
-            } else if (dynamicSizeFactor > 0) {
-              curFontSize = fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor);
-            }
-
-            ctx.font = `normal ${curFontSize}px ${fontBase}`;
-            ctx.fillStyle = (colorMode === 'sample') ? `rgb(${rawR},${rawG},${rawB})` : textColor;
-
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(a + Math.PI / 2 + (manualRotation * Math.PI) / 180);
-            ctx.fillText(currentWord, 0, 0);
-            ctx.restore();
-          }
-        }
-      }
-    }
-
-    function toggleAccordion(btn) {
-      const item = btn.parentElement;
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    }
-
-    document.querySelectorAll('input, select, textarea').forEach(elem => {
-      elem.addEventListener('input', () => {
-        if (document.getElementById('fontSizeVal')) document.getElementById('fontSizeVal').innerText = document.getElementById('fontSize').value + 'px';
-        if (document.getElementById('lineHeightVal')) document.getElementById('lineHeightVal').innerText = document.getElementById('lineHeight').value + 'x';
-        if (document.getElementById('letterSpacingVal')) document.getElementById('letterSpacingVal').innerText = document.getElementById('letterSpacing').value + 'px';
-        if (document.getElementById('rotationAngleVal')) document.getElementById('rotationAngleVal').innerText = document.getElementById('rotationAngle').value + '°';
-        if (document.getElementById('dynamicSizeVal')) document.getElementById('dynamicSizeVal').innerText = document.getElementById('dynamicSizeSlider').value + 'x';
-        if (document.getElementById('heroWordsVal')) document.getElementById('heroWordsVal').innerText = document.getElementById('heroWordsSlider').value + 'x';
-        if (document.getElementById('clippingVal')) document.getElementById('clippingVal').innerText = document.getElementById('clippingSlider').value + '%';
-        if (document.getElementById('luminanceVal')) document.getElementById('luminanceVal').innerText = document.getElementById('luminanceShift').value;
-        if (document.getElementById('contrastVal')) document.getElementById('contrastVal').innerText = document.getElementById('contrast').value + 'x';
-        if (document.getElementById('warpVal')) document.getElementById('warpVal').innerText = document.getElementById('warpAmount').value;
-        if (document.getElementById('thresholdVal')) document.getElementById('thresholdVal').innerText = document.getElementById('threshold').value;
-        if (document.getElementById('blurVal')) document.getElementById('blurVal').innerText = document.getElementById('blurAmount').value + 'px';
-        if (document.getElementById('bgBlendVal')) document.getElementById('bgBlendVal').innerText = document.getElementById('bgBlend').value + '%';
-
-        renderCanvas();
-      });
-    });
-
-    document.getElementById('imageInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = new Image();
-          img.onload = () => {
-            setupSourceImage(img);
-          };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    document.getElementById('fontFileInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const font = new FontFace('CustomUserFont', event.target.result);
-          font.load().then((loadedFont) => {
-            document.fonts.add(loadedFont);
-            customFontName = 'CustomUserFont';
-            renderCanvas();
-          });
-        };
-        reader.readAsArrayBuffer(file);
-      }
-    });
-
-    function downloadImage(format) {
-      const scale = parseInt(document.getElementById('exportScale').value);
-      const exportCanvas = document.createElement('canvas');
-      exportCanvas.width = canvas.width * scale;
-      exportCanvas.height = canvas.height * scale;
-      const eCtx = exportCanvas.getContext('2d');
-      eCtx.scale(scale, scale);
-      eCtx.drawImage(canvas, 0, 0);
-
-      const link = document.createElement('a');
-      link.download = `typographic-portrait.${format}`;
-      link.href = exportCanvas.toDataURL(`image/${format}`);
-      link.click();
-    }
-
-    function downloadSVG() {
-      const w = canvas.width;
-      const h = canvas.height;
-
-      const textRaw = document.getElementById('textInput').value || "vergonha";
-      const transformMode = document.getElementById('textTransformSelect').value;
-      let text = textRaw;
-      if (transformMode === 'uppercase') text = textRaw.toUpperCase();
-      if (transformMode === 'lowercase') text = textRaw.toLowerCase();
-
-      const words = text.split(/\s+/).filter(w => w.length > 0);
-      const fontBase = customFontName || document.getElementById('fontSelect').value;
-      const fontSize = parseInt(document.getElementById('fontSize').value);
-      const lineHeight = parseFloat(document.getElementById('lineHeight').value);
-      const letterSpacing = parseInt(document.getElementById('letterSpacing').value);
-      const manualRotation = parseInt(document.getElementById('rotationAngle').value);
-      const flowMode = document.getElementById('flowModeSelect').value;
-
-      const invertTextEmpty = document.getElementById('invertTextEmptyToggle').checked;
-      const dynamicSizeFactor = parseFloat(document.getElementById('dynamicSizeSlider').value);
-      const heroWordsFactor = parseFloat(document.getElementById('heroWordsSlider').value);
-      const clippingMaskVal = parseInt(document.getElementById('clippingSlider').value);
-
-      const lumShift = parseInt(document.getElementById('luminanceShift').value);
-      const contrast = parseFloat(document.getElementById('contrast').value);
-      const warp = parseInt(document.getElementById('warpAmount').value);
-      const threshold = parseInt(document.getElementById('threshold').value);
-      const blurVal = parseInt(document.getElementById('blurAmount').value);
-
-      const invertColors = document.getElementById('invertColorsToggle').checked;
-      const colorMode = document.getElementById('colorModeSelect').value;
-      let textColor = document.getElementById('textColor').value;
-      let bgColor = document.getElementById('bgColor').value;
-      if (invertColors) {
-        const tmp = textColor; textColor = bgColor; bgColor = tmp;
-      }
-
-      const underlineColor = document.getElementById('underlineColor').value;
-      const underlineWords = document.getElementById('underlineKeywords').value
-        .split(',').map(s => s.trim().toLowerCase()).filter(s => s.length > 0);
-
-      const off = document.createElement('canvas');
-      off.width = w; off.height = h;
-      const oCtx = off.getContext('2d', { willReadFrequently: true });
-
-      if (blurVal > 0) oCtx.filter = `blur(${blurVal}px)`;
-      oCtx.drawImage(highResCanvas, 0, 0, w, h);
-      oCtx.filter = 'none';
-
-      const imgData = oCtx.getImageData(0, 0, w, h);
-      const pixels = imgData.data;
-
-      let svgElements = `<rect width="100%" height="100%" fill="${bgColor}"/>`;
-      let wordIdx = 0;
-
-      if (flowMode === 'grid' || flowMode === 'contour') {
-        const stepY = fontSize * lineHeight;
-
-        for (let y = 0; y < h; y += stepY) {
-          for (let x = 0; x < w; ) {
-            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
-
-            let r = rawR + lumShift;
-            let g = rawG + lumShift;
-            let b = rawB + lumShift;
-
-            r = Math.min(255, Math.max(0, (r - 128) * contrast + 128));
-            g = Math.min(255, Math.max(0, (g - 128) * contrast + 128));
-            b = Math.min(255, Math.max(0, (b - 128) * contrast + 128));
-
-            let brightness = (r + g + b) / 3;
-
-            const effectiveThreshold = threshold * (clippingMaskVal / 100);
-            if (clippingMaskVal > 0) {
-              if (!invertTextEmpty && brightness < effectiveThreshold) {
-                x += fontSize * 0.55;
-                continue;
-              }
-              if (invertTextEmpty && brightness > effectiveThreshold) {
-                x += fontSize * 0.55;
-                continue;
-              }
-            }
-
-            const currentWord = words[wordIdx % words.length];
-            wordIdx++;
-
-            let curFontSize = fontSize;
-            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
-
-            if (heroWordsFactor > 1.0 && variance < 150 && brightness > threshold + 20) {
-              curFontSize = fontSize * heroWordsFactor;
-            } else if (dynamicSizeFactor > 0) {
-              curFontSize = fontSize * (1 + ((brightness / 255) - 0.5) * dynamicSizeFactor);
-            }
-
-            let fillStyle = textColor;
-            if (colorMode === 'sample') {
-              fillStyle = `rgb(${r},${g},${b})`;
-            } else if (colorMode === 'mono') {
-              fillStyle = `rgb(${brightness},${brightness},${brightness})`;
-            }
-
-            const pxRight = getBilinearPixel(pixels, w, h, Math.min(x + 3, w - 1), y);
-            const pxDown = getBilinearPixel(pixels, w, h, x, Math.min(y + 3, h - 1));
-            const gradX = ((pxRight[0]+pxRight[1]+pxRight[2])/3 - brightness) / 255;
-            const gradY = ((pxDown[0]+pxDown[1]+pxDown[2])/3 - brightness) / 255;
-
-            let renderY = y;
-            if (warp > 0) renderY += gradX * warp * 6;
-
-            let wordAngle = (manualRotation * Math.PI) / 180;
-            if (flowMode === 'contour') {
-              wordAngle += Math.atan2(gradY, gradX) + Math.PI / 2;
-            }
-
-            const angleDeg = (wordAngle * 180) / Math.PI;
-            const safeWord = currentWord.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            const safeFont = fontBase.replace(/'/g, '');
-
-            svgElements += `<g transform="translate(${x.toFixed(2)}, ${renderY.toFixed(2)}) rotate(${angleDeg.toFixed(2)})">`;
-            svgElements += `<text font-family="${safeFont}" font-size="${curFontSize.toFixed(2)}px" fill="${fillStyle}">${safeWord}</text>`;
-
-            ctx.font = `${curFontSize}px ${fontBase}`;
-            const wordWidth = ctx.measureText(currentWord).width;
-
-            if (underlineWords.includes(currentWord.toLowerCase())) {
-              svgElements += `<line x1="0" y1="3" x2="${wordWidth.toFixed(2)}" y2="3" stroke="${underlineColor}" stroke-width="2"/>`;
-            }
-
-            svgElements += `</g>`;
-
-            x += Math.max(wordWidth + letterSpacing, curFontSize * 0.55);
-          }
-        }
-      } else if (flowMode === 'radial') {
-        const centerX = w / 2;
-        const centerY = h / 2;
-        const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
-        const radiusStep = fontSize * lineHeight;
-
-        for (let r = fontSize; r < maxRadius; r += radiusStep) {
-          const circumference = 2 * Math.PI * r;
-          const wordCount = Math.floor(circumference / (fontSize * 2.5));
-          const angleStep = (2 * Math.PI) / Math.max(1, wordCount);
-
-          for (let a = 0; a < 2 * Math.PI; a += angleStep) {
-            const x = centerX + r * Math.cos(a);
-            const y = centerY + r * Math.sin(a);
-
-            if (x < 0 || x >= w || y < 0 || y >= h) continue;
-
-            const [rawR, rawG, rawB] = getBilinearPixel(pixels, w, h, x, y);
-            let br = (rawR + rawG + rawB) / 3 + lumShift;
-            br = Math.min(255, Math.max(0, (br - 128) * contrast + 128));
-
-            const effectiveThreshold = threshold * (clippingMaskVal / 100);
-            if (clippingMaskVal > 0) {
-              if (!invertTextEmpty && br < effectiveThreshold) continue;
-              if (invertTextEmpty && br > effectiveThreshold) continue;
-            }
-
-            const currentWord = words[wordIdx % words.length];
-            wordIdx++;
-
-            let curFontSize = fontSize;
-            const variance = getLocalVariance(pixels, w, h, Math.floor(x), Math.floor(y));
-
-            if (heroWordsFactor > 1.0 && variance < 150 && br > threshold + 20) {
-              curFontSize = fontSize * heroWordsFactor;
-            } else if (dynamicSizeFactor > 0) {
-              curFontSize = fontSize * (1 + ((br / 255) - 0.5) * dynamicSizeFactor);
-            }
-
-            let fillStyle = (colorMode === 'sample') ? `rgb(${rawR},${rawG},${rawB})` : textColor;
-
-            const angleDeg = ((a + Math.PI / 2 + (manualRotation * Math.PI) / 180) * 180) / Math.PI;
-            const safeWord = currentWord.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-            svgElements += `<g transform="translate(${x.toFixed(2)}, ${y.toFixed(2)}) rotate(${angleDeg.toFixed(2)})">`;
-            svgElements += `<text font-family="${fontBase.replace(/'/g, '')}" font-size="${curFontSize.toFixed(2)}px" fill="${fillStyle}">${safeWord}</text>`;
-            svgElements += `</g>`;
-          }
-        }
-      }
-
-      const svgHeader = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
-      const fullSVG = `${svgHeader}${svgElements}</svg>`;
-
-      const blob = new Blob([fullSVG], { type: 'image/svg+xml;charset=utf-8' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'typographic-portrait.svg';
-      link.click();
-    }
-
-    createDefaultImage();
-  </script>
+  
+</header>
+
+<main class="grid">
+  <section class="win" id="stage" aria-label="Live preview">
+    <div class="top"><span>T—P</span><span>Preview</span><span id="dim">—</span></div>
+    <div class="frame"><canvas id="cv" role="img" aria-label="Typographic portrait preview"></canvas></div>
+    <div class="hint">Drop an image anywhere on the preview. Dark areas become dense text; use Invert for light-on-dark portraits.</div>
+  </section>
+
+  <aside class="win panel" aria-label="Controls">
+    <section class="sec" id="s1"><h2><i>1.</i>Source</h2><div>
+      <div class="file"><input class="sr" id="fileImg" type="file" accept="image/png,image/jpeg,image/webp"><label class="btn" for="fileImg">Choose image (PNG, JPG, WebP)</label><small id="imgName">Demo: sphere</small></div>
+      <label class="f"><span>Text</span><textarea id="txt" spellcheck="false">Typography is the craft of giving language a body. Every letter holds a small decision about weight, rhythm and space, and when thousands of them gather the page begins to breathe. Look closely and you read a sentence; step back and the sentence becomes a face, a shape, a shadow. Type is form, and form is type.</textarea></label>
+    </div></section>
+
+    <section class="sec" id="s2"><h2><i>2.</i>Typography</h2><div>
+      <label class="f"><span>Font</span><select id="fFont">
+        <option value='"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif'>Inter Tight</option>
+        <option value='"Helvetica Neue",Helvetica,Arial,sans-serif'>Helvetica / Arial</option>
+        <option value='Georgia,serif'>Georgia</option>
+        <option value='"Times New Roman",Times,serif'>Times New Roman</option>
+        <option value='"Courier New",Courier,monospace'>Courier New</option>
+        <option value='Verdana,sans-serif'>Verdana</option>
+        <option value='Impact,"Arial Narrow",sans-serif'>Impact</option>
+      </select></label>
+      <div class="file"><input class="sr" id="fileFont" type="file" accept=".ttf,.otf,font/ttf,font/otf"><label class="btn" for="fileFont">Upload font (.ttf, .otf)</label></div>
+      <div class="r" data-r="fSize"></div><div class="r" data-r="fLead"></div><div class="r" data-r="fTrack"></div>
+      <label class="f"><span>Text transform</span><select id="tt"><option value="as">As is</option><option value="up">UPPERCASE</option><option value="low">lowercase</option></select></label>
+    </div></section>
+
+    <section class="sec" id="s3"><h2><i>3.</i>Keywords</h2><div>
+      <label class="f"><span>Words to mark (comma separated)</span><input type="text" id="kw" value="type, form, letter" spellcheck="false"></label>
+      <div class="two">
+        <label class="f"><span>Style</span><select id="kwMode"><option value="ul">Underline</option><option value="hl">Highlight</option></select></label>
+        <div class="f"><span>Color</span><div class="sw">Mark <input type="color" id="kwColor" value="#ff2d00" aria-label="Underline or highlight color"></div></div>
+      </div>
+      <div class="r" data-r="kwW"></div>
+    </div></section>
+
+    <section class="sec" id="s4"><h2><i>4.</i>Color</h2><div>
+      <div class="two"><button class="b" data-pre="dark">White on black</button><button class="b" data-pre="light">Black on white</button></div>
+      <label class="f"><span>Mode</span><select id="cMode"><option value="solid">Custom solid colors</option><option value="mono">Monochromatic</option><option value="orig">Sample original image colors</option></select></label>
+      <div class="two">
+        <div class="sw" id="swText">Text <input type="color" id="cText" value="#ffffff" aria-label="Text color"></div>
+        <div class="sw">Background <input type="color" id="cBg" value="#0a0a0a" aria-label="Background color"></div>
+      </div>
+    </div></section>
+
+    <section class="sec" id="s5"><h2><i>5.</i>Image &amp; warp</h2><div>
+      <div class="r" data-r="adjC"></div><div class="r" data-r="adjB"></div><div class="r" data-r="adjT"></div>
+      <div class="r" data-r="blur"></div><div class="r" data-r="bgBlend"></div>
+      <label class="chk"><input type="checkbox" id="inv"> Invert (light areas carry text)</label>
+      <div class="r" data-r="warp"></div>
+      <label class="chk"><input type="checkbox" id="varSize" checked> Variable letter size (larger where the image is dark or on edges)</label>
+      <div class="r" data-r="vsAmt"></div>
+      <div class="r" data-r="steps"></div>
+      <div class="r" data-r="hero"></div>
+      <label class="chk"><input type="checkbox" id="trim" checked> Cut words at the image edge</label>
+      <label class="chk"><input type="checkbox" id="fade"> Opacity follows brightness (off = crisp)</label>
+    </div></section>
+
+    <section class="sec" id="s6"><h2><i>6.</i>Export</h2><div>
+      <div class="scales" role="group" aria-label="Scale factor">
+        <button class="b" data-s="1" aria-pressed="false">1×</button><button class="b" data-s="2" aria-pressed="true">2×</button><button class="b" data-s="4" aria-pressed="false">4×</button>
+      </div>
+      <label class="f"><span>Format</span><select id="exFmt"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="svg">SVG (vector)</option></select></label>
+      <button class="b go" id="dl">Download</button>
+      <div id="msg" aria-live="polite"></div>
+    </div></section>
+  </aside>
+</main>
+</div>
+
+<script>
+const $=i=>document.getElementById(i);
+const R=[['fSize','Font size',5,40,12,.5,'px'],['fLead','Line height',.6,2.2,.95,.05,'×'],['fTrack','Letter spacing',-1,8,0,.1,'px'],['kwW','Underline weight',.5,8,1.5,.1,'px'],['adjC','Contrast',-100,100,40,1,''],['adjB','Brightness',-100,100,0,1,''],['adjT','Threshold',0,90,8,1,''],['warp','Word distortion',0,100,45,1,'%'],['vsAmt','Size contrast',0,100,70,1,'%'],['steps','Size levels (0 = smooth)',0,6,2,1,''],['hero','Hero scale (flat areas)',1,4,1,.1,'×'],['blur','Blur (smooth edges)',0,10,0,1,'px'],['bgBlend','Image behind text',0,100,0,1,'%']];
+document.querySelectorAll('[data-r]').forEach(d=>{const r=R.find(a=>a[0]===d.dataset.r);d.innerHTML=`<label for="${r[0]}"><span>${r[1]}</span><output id="o_${r[0]}">${r[4]}${r[6]}</output></label><input id="${r[0]}" type="range" min="${r[2]}" max="${r[3]}" step="${r[5]}" value="${r[4]}">`;});
+
+const msg=t=>$('msg').textContent=t;
+let src=null,F=null,scale=2;
+
+function demo(){const c=document.createElement('canvas');c.width=800;c.height=860;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,800,860);
+ x.fillStyle='rgba(0,0,0,.4)';x.beginPath();x.ellipse(470,760,300,48,0,0,7);x.fill();
+ const g=x.createRadialGradient(300,260,30,400,400,310);g.addColorStop(0,'#e4e4e4');g.addColorStop(.45,'#6a6a6a');g.addColorStop(1,'#000');
+ x.fillStyle=g;x.beginPath();x.arc(400,400,300,0,7);x.fill();return c;}
+
+function build(){if(!src)return;const iw=src.width||src.naturalWidth,ih=src.height||src.naturalHeight;
+ const W=1000,H=Math.max(200,Math.min(1800,Math.round(W*ih/iw)));
+ const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});
+ x.fillStyle='#fff';x.fillRect(0,0,W,H);x.filter=`blur(${$('blur').value}px)`;x.drawImage(src,0,0,W,H);x.filter='none';
+ F={W,H,px:x.getImageData(0,0,W,H).data,ink:new Float32Array(W*H),gx:new Float32Array(W*H),gy:new Float32Array(W*H)};grade();}
+
+function grade(){if(!F)return;const{W,H,px,ink,gx,gy}=F;
+ const B=$('adjB').value/200,cv=+$('adjC').value,C=cv>=0?1+cv/40:1+cv/100,T=$('adjT').value/100,inv=$('inv').checked;
+ for(let i=0,j=0;i<W*H;i++,j+=4){let l=(.299*px[j]+.587*px[j+1]+.114*px[j+2])/255+B;l=(l-.5)*C+.5;if(inv)l=1-l;let k=1-l;k=k<0?0:k>1?1:k;ink[i]=k<T?0:(k-T)/(1-T);}
+ const o=4;for(let y=0;y<H;y++){const yu=Math.max(0,y-o)*W,yd=Math.min(H-1,y+o)*W,yy=y*W;for(let x=0;x<W;x++){const i=yy+x;gx[i]=ink[yy+Math.min(W-1,x+o)]-ink[yy+Math.max(0,x-o)];gy[i]=ink[yd+x]-ink[yu+x];}}}
+
+function hsl(hex){const r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+ const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn;let h=0,s=0;
+ if(d){s=d/(1-Math.abs(2*l-1));h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h=(h*60+360)%360;}
+ return{h,s:s*100,l};}
+
+function svgCtx(m){const o=[],c={out:o,fillStyle:'#000',globalAlpha:1,strokeStyle:'#000',lineWidth:1,font:'',textBaseline:'',tf:[],st:[],p:'',
+ measureText:t=>{m.font=c.font;return m.measureText(t);},
+ scale(a,b){c.tf.push(`scale(${a} ${b})`);},translate(a,b){c.tf.push(`translate(${a.toFixed(2)} ${b.toFixed(2)})`);},rotate(a){c.tf.push(`rotate(${(a*180/Math.PI).toFixed(2)})`);},
+ save(){c.st.push(c.tf.length);},restore(){c.tf.length=c.st.pop();},
+ T(){return c.tf.length?` transform="${c.tf.join(' ')}"`:'';},
+ O(){return c.globalAlpha<1?` fill-opacity="${c.globalAlpha.toFixed(2)}"`:'';},
+ fillRect(x,y,w,h){o.push(`<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="${c.fillStyle}"${c.O()}${c.T()}/>`);},
+ fillText(t){o.push(`<text${c.T()} fill="${c.fillStyle}"${c.O()}>${t.replace(/[&<>]/g,q=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[q]))}</text>`);},
+ beginPath(){c.p='';},drawImage(){},moveTo(x,y){c.p+=`M${x.toFixed(2)} ${y.toFixed(2)}`;},lineTo(x,y){c.p+=`L${x.toFixed(2)} ${y.toFixed(2)}`;},
+ stroke(){o.push(`<path d="${c.p}" fill="none" stroke="${c.strokeStyle}" stroke-width="${c.lineWidth}"/>`);}};return c;}
+
+function render(ctx,s){
+ const{W,H,px,ink,gx,gy}=F;
+ const fs=+$('fSize').value,lh=fs*$('fLead').value,tr=+$('fTrack').value,warp=$('warp').value/100,vs=$('varSize').checked,vsA=$('vsAmt').value/100,trim=$('trim').checked,stp=+$('steps').value,fade=$('fade').checked,hero=+$('hero').value,bb=$('bgBlend').value/100;
+ const mode=$('cMode').value,tc=$('cText').value,kc=$('kwColor').value,kw=+$('kwW').value,hlt=$('kwMode').value==='hl';
+ ctx.save();ctx.scale(s,s);ctx.fillStyle=$('cBg').value;ctx.fillRect(0,0,W,H);
+ if(bb>0&&src){ctx.globalAlpha=bb;ctx.drawImage(src,0,0,W,H);ctx.globalAlpha=1;}
+ ctx.font=`${fs}px ${$('fFont').value}`;ctx.textBaseline='alphabetic';
+ const strip=/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu;
+ const tt=$('tt').value,raw=$('txt').value,words=(tt==='up'?raw.toUpperCase():tt==='low'?raw.toLowerCase():raw).match(/\S+/g)||['type'];
+ const keys=new Set($('kw').value.toLowerCase().split(/[,;\n]+/).map(k=>k.trim()).filter(Boolean));
+ const meta=words.map(w=>({w,kw:keys.has(w.toLowerCase().replace(strip,''))}));
+ const cw={},wd=ch=>cw[ch]??(cw[ch]=ctx.measureText(ch).width);
+ const sp=wd(' ')||fs*.3,tl=hsl(tc);
+ const ci=(x,y)=>Math.max(0,Math.min(H-1,y|0))*W+Math.max(0,Math.min(W-1,x|0));
+ let wi=0;
+ for(let y=fs;y<H+lh;y+=lh){
+  let x=0;
+  while(x<W){
+   const m=meta[wi%meta.length];let bw=0;for(const ch of m.w)bw+=wd(ch)+tr;if(bw<=0)bw=fs*.3;
+   const cx=x+bw/2,my=y-fs*.3,i=ci(cx,my),ik=ink[i];
+   if(!trim&&ik<=.02){x+=fs*.4;continue;}
+   const kb=.55+.45*ik,pts=[];let p=x;
+   for(const ch of m.w){const wb=wd(ch)+tr,j=ci(p+wb*kb/2,my),ic=ink[j];
+    const a=gx[j],b=gy[j],g=Math.hypot(a,b),e=Math.min(1,g*4);
+    let k=kb;if(vs){const q=stp>0?Math.max(1,Math.ceil(ic*stp))/stp:ic;k=Math.max(.35,(1+vsA*(q*1.7-.7))*(1+(stp>0?0:.5)*vsA*e));}
+    if(hero>1&&e<.15&&ic>.6)k*=hero;
+    const w=wb*k;
+    if(trim&&ic<=.04){p+=w;continue;}
+    let dx=0,dy=0,r=0;
+    if(warp>0&&g>.002){const nx=a/g,ny=b/g,f=warp*e,s2=(.5-ic)*2;dx=nx*s2*f*fs*1.2;dy=ny*s2*f*fs*1.2;
+     let t=Math.atan2(nx,-ny);if(t>Math.PI/2)t-=Math.PI;else if(t<-Math.PI/2)t+=Math.PI;r=t*Math.min(1,f*1.4);}
+    let col,al;
+    if(mode==='orig'){const q=j*4;col=`rgb(${px[q]},${px[q+1]},${px[q+2]})`;al=.5+.5*ic;}
+    else if(mode==='mono'){const l=Math.max(.06,Math.min(.94,tl.l+(.5-ic)*.5));col=`hsl(${tl.h},${tl.s}%,${l*100}%)`;al=.4+.6*ic;}
+    else{col=tc;al=.3+.7*ic;}
+    if(!fade)al=1;if(m.kw)al=Math.max(al,.95);
+    pts.push([p+dx,y+dy,r,w,ch,k,col,al]);p+=w;}
+   if(!pts.length){x+=fs*.25;continue;}
+   if(m.kw&&hlt){ctx.globalAlpha=.9;ctx.fillStyle=kc;for(const[X,Y,r,w,ch,k]of pts){ctx.save();ctx.translate(X,Y);ctx.rotate(r);ctx.fillRect(0,-fs*k*.82,w+.5,fs*k);ctx.restore();}}
+   
+   for(const[X,Y,r,w,ch,k,col,al]of pts){ctx.globalAlpha=al;ctx.fillStyle=col;ctx.save();ctx.translate(X,Y);ctx.rotate(r);ctx.scale(k,k);ctx.fillText(ch,0,0);ctx.restore();}
+   if(m.kw&&!hlt){ctx.globalAlpha=1;ctx.strokeStyle=kc;ctx.lineWidth=kw;ctx.beginPath();
+    for(const[X,Y,r,w,ch,k]of pts){const u=fs*k*.16,c=Math.cos(r),n=Math.sin(r),ox=-n*u,oy=c*u;ctx.moveTo(X+ox,Y+oy);ctx.lineTo(X+ox+c*w,Y+oy+n*w);}ctx.stroke();}
+   wi++;x=p+(sp+tr)*kb;
+  }
+ }
+ ctx.restore();ctx.globalAlpha=1;
+}
+
+let raf=0;
+function draw(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(!F)return;const pr=Math.min(2,window.devicePixelRatio||1),cv=$('cv');
+ cv.width=F.W*pr;cv.height=F.H*pr;render(cv.getContext('2d'),pr);$('dim').textContent=`${F.W}×${F.H}`;});}
+
+async function ensureFont(){try{await document.fonts.load(`16px ${$('fFont').value}`);}catch(e){}draw();}
+
+const ADJ=['adjC','adjB','adjT','inv'];
+document.querySelectorAll('input,select,textarea').forEach(el=>el.addEventListener('input',e=>{
+ const id=el.id;if(!id||el.type==='file')return;
+ const r=R.find(a=>a[0]===id);if(r)$('o_'+id).textContent=el.value+r[6];
+ if(id==='cMode')$('cText').disabled=el.value==='orig',$('swText').classList.toggle('off',el.value==='orig');
+ if(id==='blur')build();else if(ADJ.includes(id))grade();
+ id==='fFont'?ensureFont():draw();}));
+
+function loadImg(f){if(!f)return;if(!/^image\/(png|jpe?g|webp)/.test(f.type)){msg('Use a PNG, JPG or WebP image.');return;}
+ const u=URL.createObjectURL(f),im=new Image();
+ im.onload=()=>{src=im;build();draw();URL.revokeObjectURL(u);$('imgName').textContent=f.name;msg('');};
+ im.onerror=()=>msg('That image could not be read.');im.src=u;}
+$('fileImg').onchange=e=>loadImg(e.target.files[0]);
+const st=$('stage');st.ondragover=e=>e.preventDefault();st.ondrop=e=>{e.preventDefault();loadImg(e.dataTransfer.files[0]);};
+
+$('fileFont').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+ try{const n='Custom'+Date.now(),ff=new FontFace(n,await f.arrayBuffer());await ff.load();document.fonts.add(ff);
+  const o=new Option(f.name.replace(/\.\w+$/,'')+' (custom)',`"${n}",sans-serif`);$('fFont').add(o);$('fFont').value=o.value;draw();msg('');}
+ catch(err){msg('That font file could not be read. Use .ttf or .otf.');}};
+
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{scale=+b.dataset.s;document.querySelectorAll('[data-s]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>$(b.dataset.go).scrollIntoView({behavior:'smooth',block:'start'}));
+
+async function exportSvg(){msg('Building SVG…');await new Promise(r=>setTimeout(r,30));
+ const c=svgCtx(document.createElement('canvas').getContext('2d'));
+ try{render(c,1);}catch(e){msg('SVG export failed.');return;}
+ const fz=parseFloat(c.font),fam=c.font.replace(/^[\d.]+px\s*/,'').replace(/"/g,"'");
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${F.W*scale}" height="${F.H*scale}" viewBox="0 0 ${F.W} ${F.H}"><g font-family="${fam}" font-size="${fz}">${c.out.join('')}</g></svg>`;
+ const b=new Blob([svg],{type:'image/svg+xml'}),name='typographic-portrait.svg';
+ try{const dl=window.claude&&await window.claude.use('downloads');
+  if(dl)await dl.save({filename:name,data:b});else{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();}
+  msg('Saved '+name);}catch(e){msg(e&&e.code==='declined'?'Download cancelled.':'SVG export failed.');}}
+$('dl').onclick=()=>{if(!F)return;if($('exFmt').value==='svg'){exportSvg();return;}const s=scale,fmt=$('exFmt').value,cv=document.createElement('canvas');cv.width=F.W*s;cv.height=F.H*s;
+ msg('Rendering '+cv.width+'×'+cv.height+'…');
+ setTimeout(()=>{try{render(cv.getContext('2d'),s);}catch(e){msg('Export failed. Try a smaller scale.');return;}
+  cv.toBlob(async b=>{if(!b){msg('That size is too large for this browser. Choose a smaller scale.');return;}
+   const name=`typographic-portrait-${s}x.${fmt==='jpeg'?'jpg':'png'}`;
+   try{const dl=window.claude&&await window.claude.use('downloads');
+    if(dl){await dl.save({filename:name,data:b});msg('Saved '+name+' ('+cv.width+'×'+cv.height+')');}
+    else{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();msg('Exported '+name);}}
+   catch(e){msg(e&&e.code==='declined'?'Download cancelled.':'Export failed. Try a smaller scale.');}
+  },fmt==='jpeg'?'image/jpeg':'image/png',.95);},30);};
+
+document.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{const l=b.dataset.pre==='light';$('cText').value=l?'#000000':'#ffffff';$('cBg').value=l?'#ffffff':'#0a0a0a';$('cMode').value='solid';$('cText').disabled=false;$('swText').classList.remove('off');draw();});
+src=demo();build();draw();ensureFont();
+document.fonts.ready.then(draw);
+addEventListener('resize',draw);
+</script>
 </body>
 </html>
